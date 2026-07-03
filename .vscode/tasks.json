@@ -1,0 +1,27 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build & Run Tests",
+            "type": "shell",
+            "command": "cmake -B build -S . && cmake --build build && ctest --test-dir build --output-on-failure",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
+            "label": "Build & Run Kolekto",
+            "type": "shell",
+            "command": "cmake -B build -S . && cmake --build build && ./build/Kolekto",
+            "problemMatcher": ["$gcc"],
+            "presentation": {
+                "clear": true
+            }
+        }
+    ]
+}
