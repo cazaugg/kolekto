@@ -3,13 +3,13 @@
 
 #include "datatypes.h"   
 
-// Ranges allow to check if a value is within certain boundries
-// Ther is a specific range type for every basic number type, 
-// however the functions and checks are generic.
+// Ranges allow to check if a value is within certain boundaries. There is a 
+// specific range type for every basic number type, however the functions and 
+// checks are generic.
 
-// ────────────────────────────────────────────────
+// ────────────────────────────────────────────────────────────────────────────
 // Data Types
-// ────────────────────────────────────────────────
+// ────────────────────────────────────────────────────────────────────────────
 
 // Unsigned
 typedef struct {
@@ -66,9 +66,10 @@ typedef struct {
 
 #define NEW_RANGE(min, max)  {min, max}
 
-// ────────────────────────────────────────────────
+// ────────────────────────────────────────────────────────────────────────────
 // Public Functions
-// ────────────────────────────────────────────────
+// ────────────────────────────────────────────────────────────────────────────
+
 #define Range_IsEmpty(r)          ((r).min > (r).max)
 
 #define Range_Contains(range, value) \
@@ -86,9 +87,10 @@ typedef struct {
     )((range), (value))
 
     
-// ────────────────────────────────────────────────
+// ────────────────────────────────────────────────────────────────────────────
 // Implementation
-// ────────────────────────────────────────────────
+// ────────────────────────────────────────────────────────────────────────────
+
 static inline bool Range_ContainsU8 (RangeU8  r, u8  v) { return v >= r.min && v <= r.max; }
 static inline bool Range_ContainsU16(RangeU16 r, u16 v) { return v >= r.min && v <= r.max; }
 static inline bool Range_ContainsU32(RangeU32 r, u32 v) { return v >= r.min && v <= r.max; }

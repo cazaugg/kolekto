@@ -5,3 +5,6 @@ function(add_unit_test name source)
 endfunction()
 
 add_unit_test(test_range test_range.c)
+add_executable(test_ascii test_ascii.c ../src/ascii.c)
+target_link_libraries(test_ascii PRIVATE unity)
+add_test(NAME test_ascii COMMAND test_ascii)
