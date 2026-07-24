@@ -1,0 +1,11 @@
+{
+    "cmake.generator": "Ninja",    
+    "cmake.coverageInfoFiles": [
+        "${workspaceFolder}/build/coverage.info"
+    ],
+    "cmake.postRunCoverageTarget": "coverage",
+    "testing.coverageToolbarEnabled": true,
+    "cSpell.words": [
+        "KOLEKTO"
+    ]
+}

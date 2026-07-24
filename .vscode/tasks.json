@@ -15,10 +15,30 @@
             }
         },
         {
-            "label": "Build & Run Kolekto",
+            "label": "Build Kolekto",
             "type": "shell",
             "command": "cmake -B build -S . && cmake --build build && ./build/Kolekto",
             "problemMatcher": ["$gcc"],
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
+            "label": "Show Coverage Report",
+            "type": "shell",
+            "command": "cmake --build build --target coverage && xdg-open ./build/coverage.html 2>/dev/null || explorer.exe ./build/coverage.html 2>/dev/null || echo 'Open build/coverage.html in your browser'",
+            "group": "test",
+            "problemMatcher": [],
+            "dependsOn": "Build & Run Tests",
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
+            "label": "Install toolchain",
+            "type": "shell",
+            "command": "sudo apt-get update && sudo apt-get install cmake ninja-build cppcheck gcovr -y",
+            "problemMatcher": [],
             "presentation": {
                 "clear": true
             }

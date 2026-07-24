@@ -45,7 +45,7 @@ void Test_Range_ContainsU8True(void)
     RangeU8 r = NEW_RANGE(10, 20);
     
     // Middle
-    TEST_ASSERT_TRUE(Range_Contains(r, 15));
+    TEST_ASSERT_TRUE(Range_Contains(r, 15));    // cppcheck-suppress syntaxError
     
     // Min
     TEST_ASSERT_TRUE(Range_Contains(r, 10));
