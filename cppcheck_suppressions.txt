@@ -1,4 +1,5 @@
 missingIncludeSystem
 unusedFunction
 toomanyconfigs
+syntaxError:test/*
 *:*/lib/*

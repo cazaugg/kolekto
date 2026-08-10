@@ -15,93 +15,91 @@
 typedef struct {
     u8  min;
     u8  max;
-} RangeU8;
+} range_u8;
 
 typedef struct {
     u16 min;
     u16 max;
-} RangeU16;
+} range_u16;
 
 typedef struct {
     u32 min;
     u32 max;
-} RangeU32;
+} range_u32;
 
 typedef struct {
     u64 min;
     u64 max;
-} RangeU64;
+} range_u64;
 
 // Signed
 typedef struct {
     i8  min;
     i8  max;
-} RangeI8;
+} range_i8;
 
 typedef struct {
     i16 min;
     i16 max;
-} RangeI16;
+} range_i16;
 
 typedef struct {
     i32 min;
     i32 max;
-} RangeI32;
+} range_i32;
 
 typedef struct {
     i64 min;
     i64 max;
-} RangeI64;
+} range_i64;
 
 // Floating Point
 typedef struct {
     f32 min;
     f32 max;
-} RangeF32;
+} range_f32;
 
 typedef struct {
     f64 min;
     f64 max;
-} RangeF64;
+} range_f64;
 
 #define NEW_RANGE(min, max)  {min, max}
 
 // ────────────────────────────────────────────────────────────────────────────
 // Public Functions
-// ────────────────────────────────────────────────────────────────────────────
+// ────────────────────────────────────────────────
+#define range_is_empty(r)          ((r).min > (r).max)
 
-#define Range_IsEmpty(r)          ((r).min > (r).max)
-
-#define Range_Contains(range, value) \
+#define range_contains(range, value) \
     _Generic((range),                \
-        RangeU8:  Range_ContainsU8,  \
-        RangeU16: Range_ContainsU16, \
-        RangeU32: Range_ContainsU32, \
-        RangeU64: Range_ContainsU64, \
-        RangeI8:  Range_ContainsI8,  \
-        RangeI16: Range_ContainsI16, \
-        RangeI32: Range_ContainsI32, \
-        RangeI64: Range_ContainsI64, \
-        RangeF32: Range_ContainsF32, \
-        RangeF64: Range_ContainsF64  \
+        range_u8:  range_contains_u8,  \
+        range_u16: range_contains_u16, \
+        range_u32: range_contains_u32, \
+        range_u64: range_contains_u64, \
+        range_i8:  range_contains_i8,  \
+        range_i16: range_contains_i16, \
+        range_i32: range_contains_i32, \
+        range_i64: range_contains_i64, \
+        range_f32: range_contains_f32, \
+        range_f64: range_contains_f64  \
     )((range), (value))
 
     
 // ────────────────────────────────────────────────────────────────────────────
 // Implementation
-// ────────────────────────────────────────────────────────────────────────────
+// ────────────────────────────────────────────────
+static inline bool range_contains_u8 (range_u8  r, u8  v) { return v >= r.min && v <= r.max; }
+static inline bool range_contains_u16(range_u16 r, u16 v) { return v >= r.min && v <= r.max; }
+static inline bool range_contains_u32(range_u32 r, u32 v) { return v >= r.min && v <= r.max; }
+static inline bool range_contains_u64(range_u64 r, u64 v) { return v >= r.min && v <= r.max; }
 
-static inline bool Range_ContainsU8 (RangeU8  r, u8  v) { return v >= r.min && v <= r.max; }
-static inline bool Range_ContainsU16(RangeU16 r, u16 v) { return v >= r.min && v <= r.max; }
-static inline bool Range_ContainsU32(RangeU32 r, u32 v) { return v >= r.min && v <= r.max; }
-static inline bool Range_ContainsU64(RangeU64 r, u64 v) { return v >= r.min && v <= r.max; }
+static inline bool range_contains_i8 (range_i8  r, i8  v) { return v >= r.min && v <= r.max; }
+static inline bool range_contains_i16(range_i16 r, i16 v) { return v >= r.min && v <= r.max; }
+static inline bool range_contains_i32(range_i32 r, i32 v) { return v >= r.min && v <= r.max; }
+static inline bool range_contains_i64(range_i64 r, i64 v) { return v >= r.min && v <= r.max; }
 
-static inline bool Range_ContainsI8 (RangeI8  r, i8  v) { return v >= r.min && v <= r.max; }
-static inline bool Range_ContainsI16(RangeI16 r, i16 v) { return v >= r.min && v <= r.max; }
-static inline bool Range_ContainsI32(RangeI32 r, i32 v) { return v >= r.min && v <= r.max; }
-static inline bool Range_ContainsI64(RangeI64 r, i64 v) { return v >= r.min && v <= r.max; }
-
-static inline bool Range_ContainsF32(RangeF32 r, f32 v) { return v >= r.min && v <= r.max; }
-static inline bool Range_ContainsF64(RangeF64 r, f64 v) { return v >= r.min && v <= r.max; }
+static inline bool range_contains_f32(range_f32 r, f32 v) { return v >= r.min && v <= r.max; }
+static inline bool range_contains_f64(range_f64 r, f64 v) { return v >= r.min && v <= r.max; }
 
 #endif /* KOLEKTO_RANGE */

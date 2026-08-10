@@ -1,5 +1,3 @@
-
-
 #ifndef KOLEKTO_DATATYPES
 #define KOLEKTO_DATATYPES
 
@@ -25,20 +23,20 @@ typedef double f64;
 
 // Boolean (already in stdbool.h, but alias for consistency)
 // typedef bool     bool
-typedef size_t Size;
-typedef void * const Any;
+typedef size_t size;
+typedef void * const any;
 
 // Strings
-typedef char const * const String;
+typedef char const * const string;
 
 typedef struct
 {
     char const *const data;
     const u32 capacity;
     u32 length;
-} MutableString;
+} string_builder;
 
-#define NEW_MUTABLE_STRING(len)     (MutableString){.data = (u8[len]){0}, .capacity = len, .length = 0}
+#define NEW_STRING_BUILDER(len)     (string_builder){.data = (u8[len]){0}, .capacity = len, .length = 0}
 
 #define UNUSED(x) (void)(x);
 
@@ -47,4 +45,5 @@ typedef struct
         typeof_unqual(b) _b = (b); \
         _a < _b ? _a : _b; \
     })     
+
 #endif // KOLEKTO_DATATYPES

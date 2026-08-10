@@ -46,7 +46,7 @@ GenericType Generic_GetTypeU32(u32 val)
     return GENERIC_U32;
 }
 
-bool Generic_CheckRangeU32(Generic generic[const static 1], u32 value)
+bool Generic_Checkrange_u32(Generic generic[const static 1], u32 value)
 {
     ASSERT(generic->type == value);
     if(generic->type != value) return false;
