@@ -1,44 +1,59 @@
 #include "datatypes.h"
+#include "ascii.h"
 
-static inline string __sl_return_self(string str)   {return str;}
-static inline string __sb_return_sl(string_builder str)   {return str.data;}
+#ifndef SAFE_STRINGS
+#define SAFE_STRINGS
 
-#define to_string(str)  _Generic((str), string: __string_return_self, string_builder: __string_return_string)
+static inline string string_literal_to_self(string str)   {return str;}
+static inline string string_builder_to_literal(string_builder str)   {return str.data;}
+#define to_string(str)  _Generic((str), string: string_literal_to_self, string_builder: string_builder_to_literal)(str)
 
-#define string_length(str) _Generic((str), string: __sl_length, string_builder: __sb_length)(str)
-#define string_empty(str) _Generic((str), string: __sl_empty, string_builder: __sb_empty)(str)
-#define string_compare(a, b) __sl_compare(to_string(a), to_string(b))
-#define string_equal(a, b) __sl_equal(to_string(a), to_string(b))
+u32 string_literal_length(string str);
+u32 string_builder_length(string_builder str);
+#define string_length(str) _Generic((str), string: string_literal_length, string_builder: string_builder_length)(str)
 
-u32 __sl_length(string str);
-u32 __sb_length(string str);
+u32 string_builder_capacity(string_builder str);
 
-bool __sl_empty(string str);
-bool __sb_empty(string_builder str);
+bool string_literal_empty(string str);
+bool string_builder_empty(string_builder str);
+#define string_empty(str) _Generic((str), string: string_literal_empty, string_builder: string_builder_empty)(str)
 
-bool __sl_equal(string a, string b);            
-i8 __sl_compare(string a, string b);
+bool string_literal_equal(string a, string b);
+#define string_equal(a, b) string_literal_equal(to_string(a), to_string(b))
 
-bool string_starts_with(string str, string prefix);  
-bool string_ends_with(string str, string suffix);
-bool string_contains(string str, string needle);     
-u32  string_find(string str, string needle);
-u32  string_count(string str, string needle); 
+i8 string_literal_compare(string a, string b);
+#define string_compare(a, b) string_literal_compare(to_string(a), to_string(b))
 
-u32 string_set(string_builder string, string value);
-void string_clear(string_builder str);
-bool string_append(string_builder str, string text);
-bool string_append_char(string_builder str, ascii ch);
+bool string_literal_starts_with(string str, string prefix);  
+#define string_starts_with(str, prefix) string_literal_starts_with(to_string(str), prefix);  
 
-bool string_join(string_builder str, string separator, u8 nof_joins, string list[nof_joins]);
-u8 string_split(string_builder str, u8 nof_splits, string splits[nof_splits]);
-u32 string_insert(string_builder str, u32 position, string insert);
-u32 string_replace(string_builder str, string search, string replace);
-void string_reverse(string_builder str);
+bool string_literal_ends_with(string str, string suffix);
+#define string_ends_with(str, suffix) string_literal_ends_with(to_string(str), suffix);
 
-u32 string_trim(string_builder str);
-u32 string_trim_start(string_builder str);
-u32 string_trim_end(string_builder str);
+bool string_literal_contains(string str, string needle);
+#define string_contains(str, needle) string_literal_contains(to_string(str), needle);
 
-u32 string_to_upper(string_builder str);
-u32 string_to_lower(string_builder str);
+u32 string_literal_find(string str, string needle);
+#define string_find(str, needle) string_literal_find(to_string(str), needle);
+
+u32  string_literal_count(string str, string needle); 
+#define string_count(str, needle)   string_literal_count(to_string(str), needle);
+
+u32 string_set(string_builder *str, string value);
+void string_clear(string_builder *str);
+bool string_append(string_builder *str, string text);
+bool string_append_char(string_builder *str, ascii ch);
+
+u32 string_join(string_builder *str, string separator, u8 nof_joins, string list[nof_joins]);
+
+u8 string_split(string_builder *str, string delimiter, u8 nof_splits, string splits[nof_splits]);
+u32 string_insert(string_builder *str, u32 position, string insert);
+u32 string_replace(string_builder *str, string search, string replace);
+void string_reverse(string_builder *str);
+u32 string_trim(string_builder *str);
+u32 string_trim_start(string_builder *str);
+u32 string_trim_end(string_builder *str);
+u32 string_to_upper(string_builder *str);
+u32 string_to_lower(string_builder *str);
+
+#endif /* SAFE_STRINGS */

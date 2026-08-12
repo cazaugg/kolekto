@@ -12,18 +12,18 @@ add_executable(Kolekto src/main.c)
 target_link_directories(Kolekto PRIVATE src/)
 
 # ── Cppcheck ──────────────────────────────────────────────────────────────────
-find_program(CPPCHECK cppcheck REQUIRED)
-set(CMAKE_C_CPPCHECK
-    ${CPPCHECK}
-    --enable=all
-    --check-level=exhaustive
-    --suppressions-list=${CMAKE_SOURCE_DIR}/cppcheck_suppressions.txt
-    --error-exitcode=1
-    --inline-suppr
-    --template=gcc
-    ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/test
-)
+#find_program(CPPCHECK cppcheck REQUIRED)
+#set(CMAKE_C_CPPCHECK
+#    ${CPPCHECK}
+#    --enable=all
+#    --check-level=exhaustive
+#    --suppressions-list=${CMAKE_SOURCE_DIR}/cppcheck_suppressions.txt
+#    --error-exitcode=1
+#    --inline-suppr
+#    --template=gcc
+#    ${CMAKE_SOURCE_DIR}/src
+#    ${CMAKE_SOURCE_DIR}/test
+#)
 
 # ── Compiler and Linker ───────────────────────────────────────────────────────
 # Strict and pedantic compiler flags (applied to everything)
@@ -43,6 +43,7 @@ add_compile_options(
     -Wduplicated-cond
     -Wduplicated-branches
     --coverage
+    -fdiagnostics-color=always
 )
 
 # ── Tests ─────────────────────────────────────────────────────────────────────

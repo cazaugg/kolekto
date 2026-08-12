@@ -11,9 +11,9 @@ void tearDown(void)
 
 static void Test_ASCII_IsValid_True(void)
 {
-    for (int c = 0; c < 128; ++c)
+    for (int c = 1; c < 128; ++c)
     {
-        TEST_ASSERT_TRUE_MESSAGE(ASCII_IsValid((ascii)c), "All values 0-127 should be valid");
+        TEST_ASSERT_TRUE_MESSAGE(ASCII_IsValid((ascii)c), "All values 1-127 should be valid");
     }
 }
 

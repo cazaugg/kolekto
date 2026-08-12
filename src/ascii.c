@@ -31,57 +31,57 @@ u8 ascii_table[128] = {
 
 bool ASCII_IsValid(ascii character)
 {
-    return character < 128;
+    return character > 0;
 }
 
 bool ASCII_IsAlphaNumeric(ascii character)
 {
-    return ascii_table[character] & (_U|_L|_N);
+    return ascii_table[(unsigned char)character] & (_U|_L|_N);
 }
 
 bool ASCII_IsLetter(ascii character)
 {
-    return ascii_table[character] & (_U|_L);
+    return ascii_table[(unsigned char)character] & (_U|_L);
 }
 
 bool ASCII_IsLowerCase(ascii character)
 {
-    return ascii_table[character] & (_L);
+    return ascii_table[(unsigned char)character] & (_L);
 }
 
 bool ASCII_IsUpperCase(ascii character)
 {
-    return ascii_table[character] & (_U);
+    return ascii_table[(unsigned char)character] & (_U);
 }
 
 bool ASCII_IsDigit(ascii character)
 {
-    return ascii_table[character] & (_N);
+    return ascii_table[(unsigned char)character] & (_N);
 }
 
 bool ASCII_IsHexDigit(ascii character)
 {
-    return ascii_table[character] & (_N|_X);
+    return ascii_table[(unsigned char)character] & (_N|_X);
 }
 
 bool ASCII_IsPrintable(ascii character)
 {
-    return ascii_table[character] & (_P|_U|_L|_N|_B);
+    return ascii_table[(unsigned char)character] & (_P|_U|_L|_N|_B);
 }
 
 bool ASCII_IsSpace(ascii character)
 {
-    return ascii_table[character] & (_S);
+    return ascii_table[(unsigned char)character] & (_S);
 }
 
 bool ASCII_IsPunctuation(ascii character)
 {
-    return ascii_table[character] & (_P);
+    return ascii_table[(unsigned char)character] & (_P);
 }
 
 bool ASCII_IsControlCode(ascii character)
 {
-    return ascii_table[character] & (_C);
+    return ascii_table[(unsigned char)character] & (_C);
 }
 
 ascii ASCII_ToLower(ascii character)

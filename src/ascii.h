@@ -2,9 +2,10 @@
 #define KOLEKTO_ASCII
 
 #include "datatypes.h"
+#include "ascii.h"
 
 /** Portable representation of a single ASCII character (0-127). */
-typedef unsigned char ascii;
+typedef char ascii;
 
 /**
  * @brief Check if a value is a valid ASCII character.

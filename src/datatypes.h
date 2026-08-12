@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <assert.h>
 
 // Unsigned integers
 typedef uint8_t  u8;
@@ -27,11 +28,11 @@ typedef size_t size;
 typedef void * const any;
 
 // Strings
-typedef char const * const string;
+typedef char const * string;
 
 typedef struct
 {
-    char const *const data;
+    char * const data;
     const u32 capacity;
     u32 length;
 } string_builder;
@@ -45,5 +46,13 @@ typedef struct
         typeof_unqual(b) _b = (b); \
         _a < _b ? _a : _b; \
     })     
+
+#ifdef DEBUG
+#define ASSERT(cond)   if(!(cond)){ while(1){}}
+#else
+#define ASSERT(cond)
+#endif
+
+#define ASSERT_OR(cond) do { assert(cond); } while (0); if(!(cond))
 
 #endif // KOLEKTO_DATATYPES
