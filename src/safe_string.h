@@ -1,21 +1,30 @@
 #include "datatypes.h"
 #include "ascii.h"
+#include <string.h>
 
 #ifndef SAFE_STRINGS
 #define SAFE_STRINGS
 
+typedef struct
+{
+    char * const data;
+    const u32 capacity;
+    u32 length;
+} string_builder;
+
+#define NEW_STRING_BUILDER(len, init)     (string_builder){.data = (char[len+1]){init}, .capacity = len, .length = strlen(init)}
+
 static inline string string_literal_to_self(string str)   {return str;}
 static inline string string_builder_to_literal(string_builder str)   {return str.data;}
-#define to_string(str)  _Generic((str), string: string_literal_to_self, string_builder: string_builder_to_literal)(str)
+#define to_string(str)  _Generic((str), string: string_literal_to_self, char*: string_literal_to_self, string_builder: string_builder_to_literal)(str)
 
 u32 string_literal_length(string str);
 u32 string_builder_length(string_builder str);
 #define string_length(str) _Generic((str), string: string_literal_length, string_builder: string_builder_length)(str)
 
-u32 string_builder_capacity(string_builder str);
-
 bool string_literal_empty(string str);
 bool string_builder_empty(string_builder str);
+u32 string_builder_capacity(string_builder str);
 #define string_empty(str) _Generic((str), string: string_literal_empty, string_builder: string_builder_empty)(str)
 
 bool string_literal_equal(string a, string b);
@@ -25,19 +34,19 @@ i8 string_literal_compare(string a, string b);
 #define string_compare(a, b) string_literal_compare(to_string(a), to_string(b))
 
 bool string_literal_starts_with(string str, string prefix);  
-#define string_starts_with(str, prefix) string_literal_starts_with(to_string(str), prefix);  
+#define string_starts_with(str, prefix) string_literal_starts_with(to_string(str), prefix)  
 
 bool string_literal_ends_with(string str, string suffix);
-#define string_ends_with(str, suffix) string_literal_ends_with(to_string(str), suffix);
+#define string_ends_with(str, suffix) string_literal_ends_with(to_string(str), suffix)
 
 bool string_literal_contains(string str, string needle);
-#define string_contains(str, needle) string_literal_contains(to_string(str), needle);
+#define string_contains(str, needle) string_literal_contains(to_string(str), needle)
 
 u32 string_literal_find(string str, string needle);
-#define string_find(str, needle) string_literal_find(to_string(str), needle);
+#define string_find(str, needle) string_literal_find(to_string(str), needle)
 
 u32  string_literal_count(string str, string needle); 
-#define string_count(str, needle)   string_literal_count(to_string(str), needle);
+#define string_count(str, needle)   string_literal_count(to_string(str), needle)
 
 u32 string_set(string_builder *str, string value);
 void string_clear(string_builder *str);

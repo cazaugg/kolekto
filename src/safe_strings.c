@@ -59,14 +59,14 @@ bool string_literal_ends_with(string str, string suffix)
 bool string_literal_contains(string str, string needle)
 {
     ASSERT_OR(str && needle) return false;
-    ASSERT_OR(needle[0] == '\0') return false;
+    ASSERT_OR(needle[0] != '\0') return false;
     return 0 != strstr(str, needle);
 }
 
 u32 string_literal_find(string str, string needle)
 {
     ASSERT_OR(str && needle) return 0;
-    ASSERT_OR(needle[0] == '\0') return 0;
+    ASSERT_OR(needle[0] != '\0') return 0;
 
     char const *pos = strstr(str, needle);
     if(NULL == pos) return 0;
@@ -76,7 +76,7 @@ u32 string_literal_find(string str, string needle)
 u32 string_literal_count(string str, string needle)
 {
     ASSERT_OR(str && needle) return 0;
-    ASSERT_OR(needle[0] == '\0') return 0;
+    ASSERT_OR(needle[0] != '\0') return 0;
 
     u32 count = 0;
     char const *pos = str;

@@ -30,15 +30,6 @@ typedef void * const any;
 // Strings
 typedef char const * string;
 
-typedef struct
-{
-    char * const data;
-    const u32 capacity;
-    u32 length;
-} string_builder;
-
-#define NEW_STRING_BUILDER(len)     (string_builder){.data = (u8[len]){0}, .capacity = len, .length = 0}
-
 #define UNUSED(x) (void)(x);
 
 #define MIN(a, b)  __extension__({ \
