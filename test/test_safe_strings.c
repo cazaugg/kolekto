@@ -25,6 +25,13 @@ void test_string_set(void);
 void test_string_clear(void);
 void test_string_append(void);
 void test_string_append_char(void);
+void test_string_trim_start(void);
+void test_string_trim_end(void);
+void test_string_trim(void);
+void test_string_to_upper(void);
+void test_string_to_lower(void);
+void test_string_join(void);
+void test_string_reverse(void);
 
 void setUp(void)
 {
@@ -324,6 +331,161 @@ void test_string_append_char(void)
     TEST_ASSERT_EQUAL_STRING("abc hi!", sb.data);
 }
 
+void test_string_trim_start(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(16, "   hello");
+
+    TEST_ASSERT_EQUAL_UINT32(3, string_trim_start(&sb));
+    TEST_ASSERT_EQUAL_STRING("hello", sb.data);
+    TEST_ASSERT_EQUAL_UINT32(5, string_length(sb));
+
+    TEST_ASSERT_EQUAL_UINT32(0, string_trim_start(&sb));
+    TEST_ASSERT_EQUAL_STRING("hello", sb.data);
+
+    string_set(&sb, "\t\n \r\v\f x");
+    TEST_ASSERT_EQUAL_UINT32(7, string_trim_start(&sb));
+    TEST_ASSERT_EQUAL_STRING("x", sb.data);
+
+    string_set(&sb, "   ");
+    TEST_ASSERT_EQUAL_UINT32(3, string_trim_start(&sb));
+    TEST_ASSERT_EQUAL_STRING("", sb.data);
+    TEST_ASSERT_TRUE(string_empty(sb));
+
+    string_clear(&sb);
+    TEST_ASSERT_EQUAL_UINT32(0, string_trim_start(&sb));
+    TEST_ASSERT_EQUAL_STRING("", sb.data);
+}
+
+void test_string_trim_end(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(16, "hello   ");
+
+    TEST_ASSERT_EQUAL_UINT32(3, string_trim_end(&sb));
+    TEST_ASSERT_EQUAL_STRING("hello", sb.data);
+    TEST_ASSERT_EQUAL_UINT32(5, string_length(sb));
+
+    TEST_ASSERT_EQUAL_UINT32(0, string_trim_end(&sb));
+    TEST_ASSERT_EQUAL_STRING("hello", sb.data);
+
+    string_set(&sb, "x \t\n \r\v\f");
+    TEST_ASSERT_EQUAL_UINT32(7, string_trim_end(&sb));
+    TEST_ASSERT_EQUAL_STRING("x", sb.data);
+
+    string_set(&sb, "   ");
+    TEST_ASSERT_EQUAL_UINT32(3, string_trim_end(&sb));
+    TEST_ASSERT_EQUAL_STRING("", sb.data);
+    TEST_ASSERT_TRUE(string_empty(sb));
+
+    string_clear(&sb);
+    TEST_ASSERT_EQUAL_UINT32(0, string_trim_end(&sb));
+    TEST_ASSERT_EQUAL_STRING("", sb.data);
+}
+
+void test_string_trim(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(16, "  hello world  ");
+
+    TEST_ASSERT_EQUAL_UINT32(4, string_trim(&sb));
+    TEST_ASSERT_EQUAL_STRING("hello world", sb.data);
+    TEST_ASSERT_EQUAL_UINT32(11, string_length(sb));
+
+    TEST_ASSERT_EQUAL_UINT32(0, string_trim(&sb));
+    TEST_ASSERT_EQUAL_STRING("hello world", sb.data);
+
+    string_set(&sb, "\t tabbed \n");
+    TEST_ASSERT_EQUAL_UINT32(4, string_trim(&sb));
+    TEST_ASSERT_EQUAL_STRING("tabbed", sb.data);
+
+    string_set(&sb, "   ");
+    TEST_ASSERT_EQUAL_UINT32(3, string_trim(&sb));
+    TEST_ASSERT_EQUAL_STRING("", sb.data);
+
+    string_clear(&sb);
+    TEST_ASSERT_EQUAL_UINT32(0, string_trim(&sb));
+    TEST_ASSERT_EQUAL_STRING("", sb.data);
+}
+
+void test_string_to_upper(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(20, "hello world 123!");
+
+    TEST_ASSERT_EQUAL_UINT32(16, string_to_upper(&sb));
+    TEST_ASSERT_EQUAL_STRING("HELLO WORLD 123!", sb.data);
+
+    string_set(&sb, "MiXeD CaSe");
+    TEST_ASSERT_EQUAL_UINT32(10, string_to_upper(&sb));
+    TEST_ASSERT_EQUAL_STRING("MIXED CASE", sb.data);
+
+    string_clear(&sb);
+    TEST_ASSERT_EQUAL_UINT32(0, string_to_upper(&sb));
+    TEST_ASSERT_EQUAL_STRING("", sb.data);
+}
+
+void test_string_to_lower(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(20, "HELLO WORLD 123!");
+
+    TEST_ASSERT_EQUAL_UINT32(16, string_to_lower(&sb));
+    TEST_ASSERT_EQUAL_STRING("hello world 123!", sb.data);
+
+    string_set(&sb, "MiXeD CaSe");
+    TEST_ASSERT_EQUAL_UINT32(10, string_to_lower(&sb));
+    TEST_ASSERT_EQUAL_STRING("mixed case", sb.data);
+
+    string_clear(&sb);
+    TEST_ASSERT_EQUAL_UINT32(0, string_to_lower(&sb));
+    TEST_ASSERT_EQUAL_STRING("", sb.data);
+}
+
+void test_string_join(void)
+{
+    string parts[3] = {"one", "two", "three"};
+    string_builder sb = NEW_STRING_BUILDER(32, "xxxxxxxxx");
+
+    TEST_ASSERT_EQUAL_UINT32(15, string_join(&sb, ", ", 3, parts));
+    TEST_ASSERT_EQUAL_STRING("one, two, three", sb.data);
+    TEST_ASSERT_EQUAL_UINT32(15, string_length(sb));
+
+    string words[3] = {"a", "b", "c"};
+    TEST_ASSERT_EQUAL_UINT32(3, string_join(&sb, "", 3, words));
+    TEST_ASSERT_EQUAL_STRING("abc", sb.data);
+
+    string single[1] = {"solo"};
+    TEST_ASSERT_EQUAL_UINT32(4, string_join(&sb, "-", 1, single));
+    TEST_ASSERT_EQUAL_STRING("solo", sb.data);
+
+    string holes[3] = {"a", "", "c"};
+    TEST_ASSERT_EQUAL_UINT32(4, string_join(&sb, "-", 3, holes));
+    TEST_ASSERT_EQUAL_STRING("a--c", sb.data);
+
+    string_builder exact = NEW_STRING_BUILDER(8, "");
+    string fits[2] = {"123", "56789"};
+    TEST_ASSERT_EQUAL_UINT32(8, string_join(&exact, "", 2, fits));
+    TEST_ASSERT_EQUAL_STRING("12356789", exact.data);
+
+    string over[1] = {"123456789"};
+    TEST_ASSERT_EQUAL_UINT32(0, string_join(&exact, "", 1, over));
+}
+
+void test_string_reverse(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(16, "");
+    string_reverse(&sb);
+    TEST_ASSERT_EQUAL_STRING("", sb.data);
+
+    string_set(&sb, "a");
+    string_reverse(&sb);
+    TEST_ASSERT_EQUAL_STRING("a", sb.data);
+
+    string_set(&sb, "ab");
+    string_reverse(&sb);
+    TEST_ASSERT_EQUAL_STRING("ba", sb.data);
+
+    string_set(&sb, "hello");
+    string_reverse(&sb);
+    TEST_ASSERT_EQUAL_STRING("olleh", sb.data);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -351,5 +513,12 @@ int main(void)
     RUN_TEST(test_string_clear);
     RUN_TEST(test_string_append);
     RUN_TEST(test_string_append_char);
+    RUN_TEST(test_string_trim_start);
+    RUN_TEST(test_string_trim_end);
+    RUN_TEST(test_string_trim);
+    RUN_TEST(test_string_to_upper);
+    RUN_TEST(test_string_to_lower);
+    RUN_TEST(test_string_join);
+    RUN_TEST(test_string_reverse);
     return UNITY_END();
 }

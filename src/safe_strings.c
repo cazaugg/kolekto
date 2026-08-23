@@ -270,7 +270,7 @@ u32 string_to_upper(string_builder *str)
     u32 i;
     for(i = 0; i < string_length(*str); i++)
     {
-        ASCII_ToUpper(str->data[i]);
+        str->data[i] = ASCII_ToUpper(str->data[i]);
     }
     return i;
 }
@@ -279,7 +279,7 @@ u32 string_to_lower(string_builder *str)
     u32 i;
     for(i = 0; i < string_length(*str); i++)
     {
-        ASCII_ToLower(str->data[i]);
+        str->data[i] = ASCII_ToLower(str->data[i]);
     }
     return i;
 }
