@@ -92,9 +92,9 @@ u32 string_literal_count(string str, string needle)
 
 u32 string_set(string_builder *str, string value)
 {
-    ASSERT_OR(str && value) return 0;
+    ASSERT_OR(str && str->data && value) return 0;
     u32 value_len = string_length(value);
-    ASSERT_OR(value_len < str->capacity) return 0;
+    if(value_len > str->capacity) return 0;
 
     memcpy(str->data, value, value_len);
     str->data[value_len] = '\0';
@@ -111,9 +111,9 @@ void string_clear(string_builder *str)
 
 bool string_append(string_builder *str, string text)
 {
-    ASSERT_OR(str && text) return false;
+    ASSERT_OR(str && str->data && text) return false;
     u32 value_len = string_length(text);
-    ASSERT_OR(str->length + value_len < str->capacity) return false;
+    if(str->length + value_len > str->capacity) return false;
 
     memcpy(str->data + str->length, text, value_len);
     str->length += value_len;
@@ -124,17 +124,18 @@ bool string_append(string_builder *str, string text)
 bool string_append_char(string_builder *str, ascii ch)
 {
     ASSERT_OR(str && str->data) return false;
-    ASSERT_OR(str->length < str->capacity) return false;
+    if(str->length >= str->capacity) return false;
 
     str->data[str->length] = ch;
     str->length++;
+    str->data[str->length] = '\0';
     return true;
 }
 
 u32 string_join(string_builder *str, string separator, u8 nof_joins, string list[nof_joins])
 {
-    ASSERT_OR(str && separator && list) return 0;
-    string_set(str, list[0]);
+    ASSERT_OR(str && str->data && separator && list) return 0;
+    ASSERT_OR(list[0]) return 0;
 
     u32 length = 0;
     length += string_length(list[0]);
@@ -145,8 +146,9 @@ u32 string_join(string_builder *str, string separator, u8 nof_joins, string list
         length += string_length(list[i]);
     }
 
-    if(length < str->capacity)
+    if(length <= str->capacity)
     {
+        string_set(str, list[0]);
         for(u16 i = 1; i < nof_joins; i++)
         {
             string_append(str, separator);
@@ -159,71 +161,102 @@ u32 string_join(string_builder *str, string separator, u8 nof_joins, string list
 
 u8 string_split(string_builder *str, string delimiter, u8 nof_splits, string splits[nof_splits])
 {
-    ASSERT_OR(str && splits) return 0;
-    ASSERT_OR(nof_splits > 0) return 0;
+    ASSERT_OR(str && str->data && splits) return 0;
+    ASSERT_OR(delimiter && nof_splits > 0) return 0;
+
+    if('\0' == delimiter[0])
+    {
+        if(0 == str->length)
+        {
+            for(u8 i = 0; i < nof_splits; i++) splits[i] = "";
+            return 0;
+        }
+        splits[0] = str->data;
+        for(u8 i = 1; i < nof_splits; i++) splits[i] = "";
+        return 1;
+    }
 
     u8 count = 0;
-    char *pos = (char *)str->data;
+    char *pos = str->data;
 
-    for(u16 i = 0; i < nof_splits; i++)
+    pos += strspn(pos, delimiter);
+    while('\0' != *pos && count < nof_splits)
     {
+        splits[count++] = pos;
         pos += strcspn(pos, delimiter);
-        if('\0' != *pos) splits[i] = pos;
-        else splits[i] = "";
-        pos+= strspn(pos, delimiter);
-        count++;
+        if('\0' != *pos)
+        {
+            *pos = '\0';
+            pos++;
+            pos += strspn(pos, delimiter);
+        }
     }
+    for(u8 i = count; i < nof_splits; i++) splits[i] = "";
     return count;
 }
 
 u32 string_insert(string_builder *str, u32 position, string insert)
 {
-    ASSERT_OR(str && insert) return 0;
+    ASSERT_OR(str && str->data && insert) return 0;
     ASSERT_OR(position <= str->length) return 0;
 
     u32 insert_len = string_length(insert);
-    if(string_builder_capacity(*str) > insert_len)
-    {
-        u32 shift_len = str->length - position;
-        if(shift_len) memmove(&str->data[position + insert_len], &str->data[position], shift_len);
-        memcpy(&str->data[position], insert, insert_len);
-    }
+    if(0 == insert_len) return 0;
+    if(string_builder_capacity(*str) < insert_len) return 0;
+
+    u32 shift_len = str->length - position;
+    if(shift_len) memmove(&str->data[position + insert_len], &str->data[position], shift_len);
+    memcpy(&str->data[position], insert, insert_len);
+    str->length += insert_len;
+    str->data[str->length] = '\0';
     return insert_len;
 }
 
 u32 string_replace(string_builder *str, string search, string replace)
 {
-    ASSERT_OR(str &&  replace) return 0;
+    ASSERT_OR(str && str->data && search && replace) return 0;
+    ASSERT_OR('\0' != search[0]) return 0;
+    if(!string_literal_contains(str->data, search)) return 0;
 
-    u32 spot = string_find(*str, search);
-    
-    if(string_length(replace) > string_length(search))
+    u32 spot = string_literal_find(str->data, search);
+    u32 search_len = string_length(search);
+    u32 replace_len = string_length(replace);
+    u32 tail_len = str->length - spot - search_len;
+
+    if(replace_len > search_len)
     {
         // Expand
-        u32 diff = string_length(replace) - string_length(search);
-        if(diff > string_builder_capacity(*str)) memmove( &str->data[spot + diff], &str->data[spot], diff);
+        u32 diff = replace_len - search_len;
+        if(diff > string_builder_capacity(*str)) return 0;
+        memmove(&str->data[spot + replace_len], &str->data[spot + search_len], tail_len + 1);
+        memcpy(&str->data[spot], replace, replace_len);
+        str->length += diff;
     }
-    else if (string_length(replace) < string_length(search))
+    else if(replace_len < search_len)
     {
-        // Shrink
-        u32 diff = string_length(search) - string_length(replace);
-        if(diff > str->length) memmove( &str->data[spot], &str->data[spot + diff], diff);
+        // Shrink (always fits)
+        u32 diff = search_len - replace_len;
+        if(replace_len) memcpy(&str->data[spot], replace, replace_len);
+        memmove(&str->data[spot + replace_len], &str->data[spot + search_len], tail_len + 1);
+        str->length -= diff;
     }
-
-    memcpy(&str->data[spot], replace, string_length(replace));
-    return string_length(replace);
+    else
+    {
+        memcpy(&str->data[spot], replace, replace_len);
+    }
+    return 1;
 }
 
 void string_reverse(string_builder *str)
 {
-    const u32 len = string_length(*str);
-    u32 j = len;
-    for(u32 i = 0; i < j; i++)
+    ASSERT_OR(str && str->data) return;
+    u32 len = str->length;
+    if(len < 2) return;
+    for(u32 i = 0, j = len - 1; i < j; i++, j--)
     {
         char temp = str->data[i];
         str->data[i] = str->data[j];
         str->data[j] = temp;
-        j++;
     }
 }
 

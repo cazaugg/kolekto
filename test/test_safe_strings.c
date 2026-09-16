@@ -32,6 +32,23 @@ void test_string_to_upper(void);
 void test_string_to_lower(void);
 void test_string_join(void);
 void test_string_reverse(void);
+void test_string_split(void);
+void test_string_split_no_delimiter(void);
+void test_string_split_empty(void);
+void test_string_split_limit(void);
+void test_string_split_repeated_delimiters(void);
+void test_string_split_multi_delimiter(void);
+void test_string_insert(void);
+void test_string_insert_empty(void);
+void test_string_insert_exact_capacity(void);
+void test_string_insert_insufficient_capacity(void);
+void test_string_replace_same_length(void);
+void test_string_replace_longer(void);
+void test_string_replace_shorter(void);
+void test_string_replace_remove(void);
+void test_string_replace_not_found(void);
+void test_string_replace_exact_capacity(void);
+void test_string_replace_insufficient_capacity(void);
 
 void setUp(void)
 {
@@ -486,6 +503,181 @@ void test_string_reverse(void)
     TEST_ASSERT_EQUAL_STRING("olleh", sb.data);
 }
 
+void test_string_split(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(32, "one,two,three");
+    string splits[3];
+
+    TEST_ASSERT_EQUAL_UINT8(3, string_split(&sb, ",", 3, splits));
+    TEST_ASSERT_EQUAL_STRING("one", splits[0]);
+    TEST_ASSERT_EQUAL_STRING("two", splits[1]);
+    TEST_ASSERT_EQUAL_STRING("three", splits[2]);
+}
+
+void test_string_split_no_delimiter(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(16, "hello");
+    string splits[2];
+
+    TEST_ASSERT_EQUAL_UINT8(1, string_split(&sb, ",", 2, splits));
+    TEST_ASSERT_EQUAL_STRING("hello", splits[0]);
+    TEST_ASSERT_EQUAL_STRING("", splits[1]);
+}
+
+void test_string_split_empty(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(16, "");
+    string splits[2] = {"x", "y"};
+
+    TEST_ASSERT_EQUAL_UINT8(0, string_split(&sb, ",", 2, splits));
+    TEST_ASSERT_EQUAL_STRING("", splits[0]);
+    TEST_ASSERT_EQUAL_STRING("", splits[1]);
+}
+
+void test_string_split_limit(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(16, "a,b,c,d");
+    string splits[2];
+
+    TEST_ASSERT_EQUAL_UINT8(2, string_split(&sb, ",", 2, splits));
+    TEST_ASSERT_EQUAL_STRING("a", splits[0]);
+    TEST_ASSERT_EQUAL_STRING("b", splits[1]);
+}
+
+void test_string_split_repeated_delimiters(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(16, "a,,b,,c");
+    string splits[3];
+
+    TEST_ASSERT_EQUAL_UINT8(3, string_split(&sb, ",", 3, splits));
+    TEST_ASSERT_EQUAL_STRING("a", splits[0]);
+    TEST_ASSERT_EQUAL_STRING("b", splits[1]);
+    TEST_ASSERT_EQUAL_STRING("c", splits[2]);
+
+    string_set(&sb, ",a,b,");
+    TEST_ASSERT_EQUAL_UINT8(2, string_split(&sb, ",", 2, splits));
+    TEST_ASSERT_EQUAL_STRING("a", splits[0]);
+    TEST_ASSERT_EQUAL_STRING("b", splits[1]);
+}
+
+void test_string_split_multi_delimiter(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(16, "a,b;c d");
+    string splits[4];
+
+    TEST_ASSERT_EQUAL_UINT8(4, string_split(&sb, ",; ", 4, splits));
+    TEST_ASSERT_EQUAL_STRING("a", splits[0]);
+    TEST_ASSERT_EQUAL_STRING("b", splits[1]);
+    TEST_ASSERT_EQUAL_STRING("c", splits[2]);
+    TEST_ASSERT_EQUAL_STRING("d", splits[3]);
+}
+
+void test_string_insert(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(16, "hello");
+
+    TEST_ASSERT_EQUAL_UINT32(1, string_insert(&sb, 5, "!"));
+    TEST_ASSERT_EQUAL_STRING("hello!", sb.data);
+    TEST_ASSERT_EQUAL_UINT32(6, string_length(sb));
+
+    TEST_ASSERT_EQUAL_UINT32(1, string_insert(&sb, 0, "X"));
+    TEST_ASSERT_EQUAL_STRING("Xhello!", sb.data);
+
+    TEST_ASSERT_EQUAL_UINT32(3, string_insert(&sb, 1, "abc"));
+    TEST_ASSERT_EQUAL_STRING("Xabchello!", sb.data);
+    TEST_ASSERT_EQUAL_UINT32(10, string_length(sb));
+}
+
+void test_string_insert_empty(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(16, "hello");
+
+    TEST_ASSERT_EQUAL_UINT32(0, string_insert(&sb, 2, ""));
+    TEST_ASSERT_EQUAL_STRING("hello", sb.data);
+    TEST_ASSERT_EQUAL_UINT32(5, string_length(sb));
+}
+
+void test_string_insert_exact_capacity(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(8, "abcd");
+
+    TEST_ASSERT_EQUAL_UINT32(4, string_insert(&sb, 4, "efgh"));
+    TEST_ASSERT_EQUAL_STRING("abcdefgh", sb.data);
+    TEST_ASSERT_EQUAL_UINT32(8, string_length(sb));
+}
+
+void test_string_insert_insufficient_capacity(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(8, "abcd");
+
+    TEST_ASSERT_EQUAL_UINT32(0, string_insert(&sb, 2, "12345"));
+    TEST_ASSERT_EQUAL_STRING("abcd", sb.data);
+    TEST_ASSERT_EQUAL_UINT32(4, string_length(sb));
+}
+
+void test_string_replace_same_length(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(16, "hello world");
+
+    TEST_ASSERT_EQUAL_UINT32(1, string_replace(&sb, "world", "there"));
+    TEST_ASSERT_EQUAL_STRING("hello there", sb.data);
+    TEST_ASSERT_EQUAL_UINT32(11, string_length(sb));
+}
+
+void test_string_replace_longer(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(16, "hi world");
+
+    TEST_ASSERT_EQUAL_UINT32(1, string_replace(&sb, "hi", "hello"));
+    TEST_ASSERT_EQUAL_STRING("hello world", sb.data);
+    TEST_ASSERT_EQUAL_UINT32(11, string_length(sb));
+}
+
+void test_string_replace_shorter(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(16, "hello world");
+
+    TEST_ASSERT_EQUAL_UINT32(1, string_replace(&sb, "world", "you"));
+    TEST_ASSERT_EQUAL_STRING("hello you", sb.data);
+    TEST_ASSERT_EQUAL_UINT32(9, string_length(sb));
+}
+
+void test_string_replace_remove(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(16, "hello world");
+
+    TEST_ASSERT_EQUAL_UINT32(1, string_replace(&sb, " world", ""));
+    TEST_ASSERT_EQUAL_STRING("hello", sb.data);
+    TEST_ASSERT_EQUAL_UINT32(5, string_length(sb));
+}
+
+void test_string_replace_not_found(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(16, "hello");
+
+    TEST_ASSERT_EQUAL_UINT32(0, string_replace(&sb, "xyz", "abc"));
+    TEST_ASSERT_EQUAL_STRING("hello", sb.data);
+    TEST_ASSERT_EQUAL_UINT32(5, string_length(sb));
+}
+
+void test_string_replace_exact_capacity(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(8, "hixxx");
+
+    TEST_ASSERT_EQUAL_UINT32(1, string_replace(&sb, "hi", "hello"));
+    TEST_ASSERT_EQUAL_STRING("helloxxx", sb.data);
+    TEST_ASSERT_EQUAL_UINT32(8, string_length(sb));
+}
+
+void test_string_replace_insufficient_capacity(void)
+{
+    string_builder sb = NEW_STRING_BUILDER(8, "hi");
+
+    TEST_ASSERT_EQUAL_UINT32(0, string_replace(&sb, "hi", "hello world"));
+    TEST_ASSERT_EQUAL_STRING("hi", sb.data);
+    TEST_ASSERT_EQUAL_UINT32(2, string_length(sb));
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -520,5 +712,22 @@ int main(void)
     RUN_TEST(test_string_to_lower);
     RUN_TEST(test_string_join);
     RUN_TEST(test_string_reverse);
+    RUN_TEST(test_string_split);
+    RUN_TEST(test_string_split_no_delimiter);
+    RUN_TEST(test_string_split_empty);
+    RUN_TEST(test_string_split_limit);
+    RUN_TEST(test_string_split_repeated_delimiters);
+    RUN_TEST(test_string_split_multi_delimiter);
+    RUN_TEST(test_string_insert);
+    RUN_TEST(test_string_insert_empty);
+    RUN_TEST(test_string_insert_exact_capacity);
+    RUN_TEST(test_string_insert_insufficient_capacity);
+    RUN_TEST(test_string_replace_same_length);
+    RUN_TEST(test_string_replace_longer);
+    RUN_TEST(test_string_replace_shorter);
+    RUN_TEST(test_string_replace_remove);
+    RUN_TEST(test_string_replace_not_found);
+    RUN_TEST(test_string_replace_exact_capacity);
+    RUN_TEST(test_string_replace_insufficient_capacity);
     return UNITY_END();
 }
