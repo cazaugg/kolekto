@@ -28,7 +28,7 @@ typedef struct
         i32 i32;
         bool boolean;
         float f32;
-        String string;
+        String str;
     } value;
 } Generic;
 

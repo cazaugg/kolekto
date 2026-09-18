@@ -1,69 +1,69 @@
 #include "safe_string.h"
 #include <string.h>
 
-u32 string_literal_length(string str)
+u32 StringLiteral_Length(String str)
 {
     return (u32)strlen(str);
 }
 
-u32 string_builder_length(string_builder str)
+u32 MutableString_Length(MutableString str)
 {
     return str.length;
 }
 
-u32 string_builder_capacity(string_builder str)
+u32 String_Capacity(MutableString str)
 {
     return str.capacity - str.length;
 }
 
-bool string_literal_empty(string str)
+bool StringLiteral_IsEmpty(String str)
 {
     return str[0] == '\0';
 }
 
-bool string_builder_empty(string_builder str)
+bool MutableString_IsEmpty(MutableString str)
 {
     return str.length == 0;
 }
 
-bool string_literal_equal(string a, string b)
+bool StringLiteral_Equal(String a, String b)
 {
     if( a && b) return 0 == strcmp(a, b);
     return false;
 }
 
-i8 string_literal_compare(string a, string b)
+i8 StringLiteral_Compare(String a, String b)
 {
     if(NULL == a) return -1;
     if(NULL == b) return 1;
     return (i8)strcmp(a, b);
 }
 
-bool string_literal_starts_with(string str, string prefix)
+bool StringLiteral_StartsWith(String str, String prefix)
 {
     ASSERT_OR(str && prefix) return false;
     return 0 == strncmp(str, prefix, strlen(prefix));
 }
 
-bool string_literal_ends_with(string str, string suffix)
+bool StringLiteral_EndsWith(String str, String suffix)
 {
     ASSERT_OR(str && suffix) return false;
 
-    u32 suffix_len = string_length(suffix);
-    u32 start = string_length(str);
+    u32 suffix_len = StringLiteral_Length(suffix);
+    u32 start = StringLiteral_Length(str);
     if(start < suffix_len) return false;
     else start -= suffix_len;
     return 0 == strncmp(str + start, suffix, suffix_len);
 }
 
-bool string_literal_contains(string str, string needle)
+bool StringLiteral_Contains(String str, String needle)
 {
     ASSERT_OR(str && needle) return false;
     ASSERT_OR(needle[0] != '\0') return false;
     return 0 != strstr(str, needle);
 }
 
-u32 string_literal_find(string str, string needle)
+u32 StringLiteral_Find(String str, String needle)
 {
     ASSERT_OR(str && needle) return 0;
     ASSERT_OR(needle[0] != '\0') return 0;
@@ -73,7 +73,7 @@ u32 string_literal_find(string str, string needle)
     return (u32)(pos - str);
 }
 
-u32 string_literal_count(string str, string needle)
+u32 StringLiteral_Count(String str, String needle)
 {
     ASSERT_OR(str && needle) return 0;
     ASSERT_OR(needle[0] != '\0') return 0;
@@ -90,10 +90,10 @@ u32 string_literal_count(string str, string needle)
     return count;
 }
 
-u32 string_set(string_builder *str, string value)
+u32 String_Set(MutableString *str, String value)
 {
     ASSERT_OR(str && str->data && value) return 0;
-    u32 value_len = string_length(value);
+    u32 value_len = StringLiteral_Length(value);
     if(value_len > str->capacity) return 0;
 
     memcpy(str->data, value, value_len);
@@ -102,17 +102,17 @@ u32 string_set(string_builder *str, string value)
     return str->length;
 }
 
-void string_clear(string_builder *str)
+void String_Clear(MutableString *str)
 {
     ASSERT_OR(str) return;
     str->data[0] = '\0';
     str->length = 0;
 }
 
-bool string_append(string_builder *str, string text)
+bool String_Append(MutableString *str, String text)
 {
     ASSERT_OR(str && str->data && text) return false;
-    u32 value_len = string_length(text);
+    u32 value_len = StringLiteral_Length(text);
     if(str->length + value_len > str->capacity) return false;
 
     memcpy(str->data + str->length, text, value_len);
@@ -121,7 +121,7 @@ bool string_append(string_builder *str, string text)
     return true;
 }
 
-bool string_append_char(string_builder *str, ascii ch)
+bool String_AppendChar(MutableString *str, ascii ch)
 {
     ASSERT_OR(str && str->data) return false;
     if(str->length >= str->capacity) return false;
@@ -132,34 +132,34 @@ bool string_append_char(string_builder *str, ascii ch)
     return true;
 }
 
-u32 string_join(string_builder *str, string separator, u8 nof_joins, string list[nof_joins])
+u32 String_Join(MutableString *str, String separator, u8 nof_joins, String list[nof_joins])
 {
     ASSERT_OR(str && str->data && separator && list) return 0;
     ASSERT_OR(list[0]) return 0;
 
     u32 length = 0;
-    length += string_length(list[0]);
+    length += StringLiteral_Length(list[0]);
     for(u16 i = 1; i < nof_joins; i++)
     {
         ASSERT_OR(list[i]) return 0;
-        length += string_length(separator);
-        length += string_length(list[i]);
+        length += StringLiteral_Length(separator);
+        length += StringLiteral_Length(list[i]);
     }
 
     if(length <= str->capacity)
     {
-        string_set(str, list[0]);
+        String_Set(str, list[0]);
         for(u16 i = 1; i < nof_joins; i++)
         {
-            string_append(str, separator);
-            string_append(str, list[i]);
+            String_Append(str, separator);
+            String_Append(str, list[i]);
         }
         return length;
     }
     return 0;
 }
 
-u8 string_split(string_builder *str, string delimiter, u8 nof_splits, string splits[nof_splits])
+u8 String_Split(MutableString *str, String delimiter, u8 nof_splits, String splits[nof_splits])
 {
     ASSERT_OR(str && str->data && splits) return 0;
     ASSERT_OR(delimiter && nof_splits > 0) return 0;
@@ -195,14 +195,14 @@ u8 string_split(string_builder *str, string delimiter, u8 nof_splits, string spl
     return count;
 }
 
-u32 string_insert(string_builder *str, u32 position, string insert)
+u32 String_Insert(MutableString *str, u32 position, String insert)
 {
     ASSERT_OR(str && str->data && insert) return 0;
     ASSERT_OR(position <= str->length) return 0;
 
-    u32 insert_len = string_length(insert);
+    u32 insert_len = StringLiteral_Length(insert);
     if(0 == insert_len) return 0;
-    if(string_builder_capacity(*str) < insert_len) return 0;
+    if(String_Capacity(*str) < insert_len) return 0;
 
     u32 shift_len = str->length - position;
     if(shift_len) memmove(&str->data[position + insert_len], &str->data[position], shift_len);
@@ -212,22 +212,22 @@ u32 string_insert(string_builder *str, u32 position, string insert)
     return insert_len;
 }
 
-u32 string_replace(string_builder *str, string search, string replace)
+u32 String_Replace(MutableString *str, String search, String replace)
 {
     ASSERT_OR(str && str->data && search && replace) return 0;
     ASSERT_OR('\0' != search[0]) return 0;
-    if(!string_literal_contains(str->data, search)) return 0;
+    if(!StringLiteral_Contains(str->data, search)) return 0;
 
-    u32 spot = string_literal_find(str->data, search);
-    u32 search_len = string_length(search);
-    u32 replace_len = string_length(replace);
+    u32 spot = StringLiteral_Find(str->data, search);
+    u32 search_len = StringLiteral_Length(search);
+    u32 replace_len = StringLiteral_Length(replace);
     u32 tail_len = str->length - spot - search_len;
 
     if(replace_len > search_len)
     {
         // Expand
         u32 diff = replace_len - search_len;
-        if(diff > string_builder_capacity(*str)) return 0;
+        if(diff > String_Capacity(*str)) return 0;
         memmove(&str->data[spot + replace_len], &str->data[spot + search_len], tail_len + 1);
         memcpy(&str->data[spot], replace, replace_len);
         str->length += diff;
@@ -247,7 +247,7 @@ u32 string_replace(string_builder *str, string search, string replace)
     return 1;
 }
 
-void string_reverse(string_builder *str)
+void String_Reverse(MutableString *str)
 {
     ASSERT_OR(str && str->data) return;
     u32 len = str->length;
@@ -260,7 +260,7 @@ void string_reverse(string_builder *str)
     }
 }
 
-u32 string_trim_start(string_builder *str)
+u32 String_TrimStart(MutableString *str)
 {
     ASSERT_OR(str) return 0;
 
@@ -273,7 +273,7 @@ u32 string_trim_start(string_builder *str)
     return start;
 }
 
-u32 string_trim_end(string_builder *str)
+u32 String_TrimEnd(MutableString *str)
 {
     ASSERT_OR(str) return 0;
 
@@ -293,24 +293,24 @@ u32 string_trim_end(string_builder *str)
     return initial_length - str->length;
 }
 
-u32 string_trim(string_builder *str)
+u32 String_Trim(MutableString *str)
 {
-    return string_trim_start(str) + string_trim_end(str);
+    return String_TrimStart(str) + String_TrimEnd(str);
 }
 
-u32 string_to_upper(string_builder *str)
+u32 String_ToUpper(MutableString *str)
 {
     u32 i;
-    for(i = 0; i < string_length(*str); i++)
+    for(i = 0; i < str->length; i++)
     {
         str->data[i] = ASCII_ToUpper(str->data[i]);
     }
     return i;
 }
-u32 string_to_lower(string_builder *str)
+u32 String_ToLower(MutableString *str)
 {
     u32 i;
-    for(i = 0; i < string_length(*str); i++)
+    for(i = 0; i < str->length; i++)
     {
         str->data[i] = ASCII_ToLower(str->data[i]);
     }

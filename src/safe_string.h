@@ -10,59 +10,59 @@ typedef struct
     char * const data;
     const u32 capacity;
     u32 length;
-} string_builder;
+} MutableString;
 
-#define NEW_STRING_BUILDER(len, init)     (string_builder){.data = (char[len+1]){init}, .capacity = len, .length = strlen(init)}
+#define NEW_MUTABLE_STRING(len, init)     (MutableString){.data = (char[len+1]){init}, .capacity = len, .length = strlen(init)}
 
-static inline string string_literal_to_self(string str)   {return str;}
-static inline string string_builder_to_literal(string_builder str)   {return str.data;}
-#define to_string(str)  _Generic((str), string: string_literal_to_self, char*: string_literal_to_self, string_builder: string_builder_to_literal)(str)
+static inline String StringLiteral_ToSelf(String str)   {return str;}
+static inline String MutableString_ToString(MutableString str)   {return str.data;}
+#define String_ToString(str)  _Generic((str), String: StringLiteral_ToSelf, char*: StringLiteral_ToSelf, MutableString: MutableString_ToString)(str)
 
-u32 string_literal_length(string str);
-u32 string_builder_length(string_builder str);
-#define string_length(str) _Generic((str), string: string_literal_length, string_builder: string_builder_length)(str)
+u32 StringLiteral_Length(String str);
+u32 MutableString_Length(MutableString str);
+#define String_Length(str) _Generic((str), String: StringLiteral_Length, char*: StringLiteral_Length, MutableString: MutableString_Length)(str)
 
-bool string_literal_empty(string str);
-bool string_builder_empty(string_builder str);
-u32 string_builder_capacity(string_builder str);
-#define string_empty(str) _Generic((str), string: string_literal_empty, string_builder: string_builder_empty)(str)
+bool StringLiteral_IsEmpty(String str);
+bool MutableString_IsEmpty(MutableString str);
+u32 String_Capacity(MutableString str);
+#define String_IsEmpty(str) _Generic((str), String: StringLiteral_IsEmpty, char*: StringLiteral_IsEmpty, MutableString: MutableString_IsEmpty)(str)
 
-bool string_literal_equal(string a, string b);
-#define string_equal(a, b) string_literal_equal(to_string(a), to_string(b))
+bool StringLiteral_Equal(String a, String b);
+#define String_Equal(a, b) StringLiteral_Equal(String_ToString(a), String_ToString(b))
 
-i8 string_literal_compare(string a, string b);
-#define string_compare(a, b) string_literal_compare(to_string(a), to_string(b))
+i8 StringLiteral_Compare(String a, String b);
+#define String_Compare(a, b) StringLiteral_Compare(String_ToString(a), String_ToString(b))
 
-bool string_literal_starts_with(string str, string prefix);  
-#define string_starts_with(str, prefix) string_literal_starts_with(to_string(str), prefix)  
+bool StringLiteral_StartsWith(String str, String prefix);
+#define String_StartsWith(str, prefix) StringLiteral_StartsWith(String_ToString(str), prefix)
 
-bool string_literal_ends_with(string str, string suffix);
-#define string_ends_with(str, suffix) string_literal_ends_with(to_string(str), suffix)
+bool StringLiteral_EndsWith(String str, String suffix);
+#define String_EndsWith(str, suffix) StringLiteral_EndsWith(String_ToString(str), suffix)
 
-bool string_literal_contains(string str, string needle);
-#define string_contains(str, needle) string_literal_contains(to_string(str), needle)
+bool StringLiteral_Contains(String str, String needle);
+#define String_Contains(str, needle) StringLiteral_Contains(String_ToString(str), needle)
 
-u32 string_literal_find(string str, string needle);
-#define string_find(str, needle) string_literal_find(to_string(str), needle)
+u32 StringLiteral_Find(String str, String needle);
+#define String_Find(str, needle) StringLiteral_Find(String_ToString(str), needle)
 
-u32  string_literal_count(string str, string needle); 
-#define string_count(str, needle)   string_literal_count(to_string(str), needle)
+u32  StringLiteral_Count(String str, String needle);
+#define String_Count(str, needle)   StringLiteral_Count(String_ToString(str), needle)
 
-u32 string_set(string_builder *str, string value);
-void string_clear(string_builder *str);
-bool string_append(string_builder *str, string text);
-bool string_append_char(string_builder *str, ascii ch);
+u32 String_Set(MutableString *str, String value);
+void String_Clear(MutableString *str);
+bool String_Append(MutableString *str, String text);
+bool String_AppendChar(MutableString *str, ascii ch);
 
-u32 string_join(string_builder *str, string separator, u8 nof_joins, string list[nof_joins]);
+u32 String_Join(MutableString *str, String separator, u8 nof_joins, String list[nof_joins]);
 
-u8 string_split(string_builder *str, string delimiter, u8 nof_splits, string splits[nof_splits]);
-u32 string_insert(string_builder *str, u32 position, string insert);
-u32 string_replace(string_builder *str, string search, string replace);
-void string_reverse(string_builder *str);
-u32 string_trim(string_builder *str);
-u32 string_trim_start(string_builder *str);
-u32 string_trim_end(string_builder *str);
-u32 string_to_upper(string_builder *str);
-u32 string_to_lower(string_builder *str);
+u8 String_Split(MutableString *str, String delimiter, u8 nof_splits, String splits[nof_splits]);
+u32 String_Insert(MutableString *str, u32 position, String insert);
+u32 String_Replace(MutableString *str, String search, String replace);
+void String_Reverse(MutableString *str);
+u32 String_Trim(MutableString *str);
+u32 String_TrimStart(MutableString *str);
+u32 String_TrimEnd(MutableString *str);
+u32 String_ToUpper(MutableString *str);
+u32 String_ToLower(MutableString *str);
 
 #endif /* SAFE_STRINGS */

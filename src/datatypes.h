@@ -23,12 +23,12 @@ typedef float  f32;
 typedef double f64;
 
 // Boolean (already in stdbool.h, but alias for consistency)
-// typedef bool     bool
-typedef size_t size;
-typedef void * const any;
+typedef bool    Bool;
+typedef size_t  Size;
+typedef void * const Any;
 
 // Strings
-typedef char const * string;
+typedef char const * String;
 
 #define UNUSED(x) (void)(x);
 
@@ -44,6 +44,6 @@ typedef char const * string;
 #define ASSERT(cond)
 #endif
 
-#define ASSERT_OR(cond) do { assert(cond); } while (0); if(!(cond))
+#define ASSERT_OR(cond) do { ASSERT(cond); } while (0); if(!(cond))
 
 #endif // KOLEKTO_DATATYPES
