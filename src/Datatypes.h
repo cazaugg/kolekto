@@ -1,3 +1,20 @@
+// ────────────────────────────────────────────────────────────────────────────
+// Datatypes — basic scalar type aliases and small utility macros.
+// ────────────────────────────────────────────────────────────────────────────
+//
+// Description:
+//
+// Project-wide aliases for fixed-width integers and floating point (`u8`…
+// `u64`, `i8`…`i64`, `f32`, `f64`) plus `Bool`, `Size`, `String` and `Any`,
+// along with a few helper macros.
+//
+// Usage:
+//
+//   u32 count = 0;
+//   f64 ratio = 0.5;
+//   String name = "kolekto";
+// ────────────────────────────────────────────────────────────────────────────
+
 #ifndef KOLEKTO_DATATYPES
 #define KOLEKTO_DATATYPES
 

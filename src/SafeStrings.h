@@ -1,3 +1,23 @@
+// ────────────────────────────────────────────────────────────────────────────
+// SafeStrings — capacity-checked string and mutable string operations.
+// ────────────────────────────────────────────────────────────────────────────
+//
+// Description:
+//
+// Capacity-checked helpers for C strings (`String`/`char*`) and a
+// fixed-capacity `MutableString` buffer. Nothing allocates: operations that
+// would exceed a buffer's capacity fail with `false` or `0`.
+//
+// Usage:
+//
+//   MutableString text = NEW_MUTABLE_STRING(32, "");
+//   String_Append(&text, "hello ");
+//   String_Append(&text, "world");
+//
+//   String literal = "value=42";
+//   if(String_StartsWith(literal, "value")) { /* ... */ }
+// ────────────────────────────────────────────────────────────────────────────
+
 #ifndef KOLEKTO_SAFESTRINGS
 #define KOLEKTO_SAFESTRINGS
 
@@ -19,6 +39,12 @@ typedef struct
  * @param initial Initial contents.
  */
 #define NEW_MUTABLE_STRING(size, initial)     (MutableString){.data = (char[size+1]){initial}, .capacity = size, .length = strlen(initial)}
+
+/**
+ * @brief Statically initialize an empty `MutableString` with inline storage.
+ * @param size Usable capacity in characters.
+ */
+#define NEW_MUTABLE_STRING_EMPTY(size)     (MutableString){.data = (char[size+1]){0}, .capacity = size, .length = 0}
 
 /** @brief Identity conversion used by `String_ToString` for string literals. */
 static inline String StringLiteral_ToSelf(String string)   {return string;}

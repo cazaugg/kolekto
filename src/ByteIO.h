@@ -1,3 +1,23 @@
+// ────────────────────────────────────────────────────────────────────────────
+// ByteIO — driver-based byte stream abstraction.
+// ────────────────────────────────────────────────────────────────────────────
+//
+// Description:
+//
+// A `ByteIO` couples an opaque `driver` with the callbacks `WriteByte`,
+// `ReadByte` and `GetStatus`. Driver state and behaviour live behind those
+// function pointers, so the same helpers serve memory, files, serial links or
+// test doubles.
+//
+// Usage:
+//
+//   ByteIO io = NEW_BYTE_IO(&device, Device_WriteByte, Device_ReadByte,
+//                           Device_GetStatus);
+//
+//   u8 data[4] = {0};
+//   Size count = ByteIO_Read(&io, 4, data);
+// ────────────────────────────────────────────────────────────────────────────
+
 #ifndef KOLEKTO_BYTEIO
 #define KOLEKTO_BYTEIO
 
@@ -30,48 +50,48 @@ typedef struct
 } ByteIO;
 
 /**
+ * @brief Statically initialize a `ByteIO` from a driver and its callbacks.
+ * @param device Opaque driver state passed to every callback.
+ * @param write_byte Write callback.
+ * @param read_byte Read callback.
+ * @param get_status Status callback (returns busy, stores the current error).
+ */
+#define NEW_BYTE_IO(device, write_byte, read_byte, get_status) \
+    (ByteIO){.driver = (device), \
+             .WriteByte = (write_byte), \
+             .ReadByte = (read_byte), \
+             .GetStatus = (get_status)}
+
+/**
  * @brief Write `count` bytes from `data`.
+ * @param io Stream to write to.
+ * @param count Number of bytes to write.
+ * @param data Bytes to write.
  * @return The number of bytes actually written.
  */
-static inline Size ByteIO_Write(ByteIO io[const static 1], Size count, u8 data[count])
-{
-    Size i;
-    for(i = 0; i < count; i++)
-    {
-        Bool ok = io->WriteByte(io->driver, data[i]);
-        if(ok == false) break;
-    }
-    return i;
-}
+Size ByteIO_Write(ByteIO io[const static 1], Size count, u8 const data[count]);
 
 /**
  * @brief Read up to `count` bytes into `data`.
+ * @param io Stream to read from.
+ * @param count Maximum number of bytes to read.
+ * @param data Receives the read bytes.
  * @return The number of bytes actually read.
  */
-static inline Size ByteIO_Read(ByteIO io[const static 1], Size count, u8 data[count])
-{
-    Size i;
-    for(i = 0; i < count; i++)
-    {
-        Bool ok = io->ReadByte(io->driver, &data[i]);
-        if(ok == false) break;
-    }
-    return i;
-}
+Size ByteIO_Read(ByteIO io[const static 1], Size count, u8 data[count]);
 
-/** @brief True while the driver reports that it cannot accept more bytes. */
-static inline Bool ByteIO_IsBusy(ByteIO io[const static 1])
-{
-    IOError ignore;
-    return io->GetStatus(io->driver, &ignore);
-}
+/**
+ * @brief Query whether the driver cannot accept more bytes.
+ * @param io Stream to inspect.
+ * @return true when the driver reports itself busy.
+ */
+Bool ByteIO_IsBusy(ByteIO io[const static 1]);
 
-/** @brief Return the last error reported by the driver. */
-static inline IOError ByteIO_GetError(ByteIO io[const static 1])
-{
-    IOError error = IOERROR_NONE;
-    io->GetStatus(io->driver, &error);
-    return error;
-}
+/**
+ * @brief Return the last error reported by the driver.
+ * @param io Stream to inspect.
+ * @return The current `IOError` code.
+ */
+IOError ByteIO_GetError(ByteIO io[const static 1]);
 
 #endif /* KOLEKTO_BYTEIO */

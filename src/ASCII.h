@@ -1,3 +1,20 @@
+// ────────────────────────────────────────────────────────────────────────────
+// ASCII — ASCII character classification and case conversion.
+// ────────────────────────────────────────────────────────────────────────────
+//
+// Description:
+//
+// Classifies ASCII characters (letters, digits, whitespace, punctuation and
+// control codes) and converts between upper and lower case. It operates on
+// single bytes and is neither locale-aware nor suitable for Unicode.
+//
+// Usage:
+//
+//   ASCII character = 'a';
+//   if(ASCII_IsLetter(character)) { /* ... */ }
+//   ASCII upper = ASCII_ToUpper(character);
+// ────────────────────────────────────────────────────────────────────────────
+
 #ifndef KOLEKTO_ASCII
 #define KOLEKTO_ASCII
 

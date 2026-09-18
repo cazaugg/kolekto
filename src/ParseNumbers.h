@@ -1,26 +1,30 @@
+// ────────────────────────────────────────────────────────────────────────────
+// ParseNumbers — type-safe parsing of text into numeric types.
+// ────────────────────────────────────────────────────────────────────────────
+//
+// Description:
+//
+// Parses text into any of the u8…u64 / i8…i64 / f32 / f64 types through the
+// generic macros `ParseNumber`, `ParseHex`, `ParseDecimal` and
+// `ParseNumber_InRange`. The destination is written only on success.
+//
+// Base handling (integers): base 0 autodetects — "0x…" is hex, a leading "0"
+// is octal, anything else is decimal. `ParseHex` / `ParseDecimal` force the
+// base. Parsing is lenient: leading whitespace is skipped and trailing garbage
+// is ignored ("12x" parses as 12). Empty input, input without any digits and
+// overflow are rejected. For floats the base argument is ignored.
+//
+// Usage:
+//
+//   u8 value = 0;
+//   if(ParseNumber(value, "42")) { /* value == 42 */ }
+//   if(ParseNumber_InRange(value, "ff", 16, 0, 200)) { /* ... */ }
+// ────────────────────────────────────────────────────────────────────────────
+
 #ifndef KOLEKTO_PARSE_NUMBERS
 #define KOLEKTO_PARSE_NUMBERS
 
 #include "Datatypes.h"
-
-// ────────────────────────────────────────────────────────────────────────────
-// Type-safe number parsing.
-//
-//   u8 value = 0;
-//   if(ParseNumber(value, "42")) { /* value == 42 */ }
-//
-// The generic macros dispatch on the destination variable (which must be an
-// lvalue of one of the u8…u64 / i8…i64 / f32 / f64 typedefs) and forward its
-// address plus the remaining arguments to the matching typed function.
-// The destination is written only on success; on failure it is untouched.
-//
-// Base handling (integers): base 0 autodetects — "0x…" is hex, a leading "0"
-// is octal, anything else is decimal. ParseHex / ParseDecimal force the base.
-// Parsing is lenient: leading whitespace is skipped and trailing garbage is
-// ignored ("12x" parses as 12). Empty input, input without any digits, and
-// overflow are rejected. For floats the base argument is accepted but
-// ignored (strtof/strtod have no base parameter).
-// ────────────────────────────────────────────────────────────────────────────
 
 /**
  * @brief Parse a number with an autodetected base into `number`.

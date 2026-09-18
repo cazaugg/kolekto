@@ -1,3 +1,7 @@
+// ────────────────────────────────────────────────────────────────────────────
+// TestSafeStrings — Unity tests for the SafeStrings module.
+// ────────────────────────────────────────────────────────────────────────────
+
 #include "unity.h"
 #include "../src/SafeStrings.h"
 

@@ -1,3 +1,7 @@
+// ────────────────────────────────────────────────────────────────────────────
+// TestParseNumbers — Unity tests for the ParseNumbers module.
+// ────────────────────────────────────────────────────────────────────────────
+
 #include "unity.h"
 #include "../src/ParseNumbers.h"
 

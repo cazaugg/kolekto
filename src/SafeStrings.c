@@ -1,3 +1,7 @@
+// ────────────────────────────────────────────────────────────────────────────
+// SafeStrings — capacity-checked string and mutable string operations.
+// ────────────────────────────────────────────────────────────────────────────
+
 #include "SafeStrings.h"
 #include <string.h>
 

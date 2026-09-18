@@ -1,3 +1,7 @@
+// ────────────────────────────────────────────────────────────────────────────
+// ParseNumbers — type-safe parsing of text into numeric types.
+// ────────────────────────────────────────────────────────────────────────────
+
 #include "ParseNumbers.h"
 
 #include <errno.h>

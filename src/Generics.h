@@ -1,3 +1,20 @@
+// ────────────────────────────────────────────────────────────────────────────
+// Generics — tagged container for dynamically typed values.
+// ────────────────────────────────────────────────────────────────────────────
+//
+// Description:
+//
+// A `Generic` stores one value in a tagged union together with its
+// `GenericType` tag. The setter and query helpers keep the tag consistent with
+// the active union member. This module is still a work in progress.
+//
+// Usage:
+//
+//   Generic value = {0};
+//   Generic_SetU8(&value, 42);
+//   if(Generic_CanCast(value, GENERIC_U32)) { /* ... */ }
+// ────────────────────────────────────────────────────────────────────────────
+
 #ifndef KOLEKTO_GENERICS
 #define KOLEKTO_GENERICS
 

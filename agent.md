@@ -2,6 +2,15 @@
 
 This document describes the naming conventions used in the Kolekto C23 library.
 
+## Implementation
+
+- Never use dynamic memory allocation
+- Object-like structures provide a `NEW_OBJECT_NAME` macro for static initialization
+- Use VLA notation for arrays as function arguments
+- Use VLA notation for pointer as function arguments (`[const static 1]`)
+
+## Style
+
 Principles
 
 - Use correct English spelling
@@ -14,22 +23,21 @@ Principles
 - Be consistent
 - Well justified exceptions are acceptable
 
-## Files and Modules
+### Files and Modules
 
 - Each module gets a name, it is written in pascal case.
 - File names equal to the module name unless this results in a conflict with the C standard library. (Eg `SafeStrings.h` is the file name, but the module is named/prefixed `String`)
   - If there are generic functions used, the prefix is extended with type `ModuleType_` for the implementation. The macro uses the same name with the module prefix.
 - Header guards are all cap and start with `KOLEKTO_`
 
-## Types
+### Types
 
 - Except a few basic types in `Datatypes.h`, types are named pascal case without the `_t` suffix. The exception is the lowercase scalar aliases `u8`…`u64`, `i8`…`i64`, `f32`, `f64`; everything else is pascal case.
 - For void pointers use the `Any` type.
-- Object-like structures provide a `NEW_OBJECT_NAME` macro for static initialization
 
 > _t suffix is reserved by the C standard
 
-## Functions
+### Functions
 
 - All public functions use the module name in pascal case as a prefix followed by an underscore.
 - All public functions have a documentation comment in the header
@@ -38,18 +46,19 @@ Principles
 - Array parameters carry their length in a preceding parameter and use the VLA-style `const` qualifier: `String list[nof_joins]`
 - Function pointer are written according to these function conventions.
 
-## Macros Enums and Constants
+### Macros Enums and Constants
 
 - Enums and macros use all cap spelling
 - Enums are prefixed with their enum or type name
 - Function like macros for generic type handling may use function naming conventions
 
-## Variables, Parameters, Struct Members
+### Variables, Parameters, Struct Members
 
 - Snake case
 
-## Tests (Unity)
+### Tests (Unity)
 
+- Test file names are `Test_<Unit>`
 - Test functions names: `Test_<Unit>_<Case>` in `PascalCase`,
   declared `static void`, registered in `main` via `RUN_TEST`.
   `Test_ASCII_IsValid_True` (`test/TestASCII.c:12`),

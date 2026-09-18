@@ -1,11 +1,24 @@
+// ────────────────────────────────────────────────────────────────────────────
+// Range — typed numeric ranges with generic containment checks.
+// ────────────────────────────────────────────────────────────────────────────
+//
+// Description:
+//
+// A range pairs a `min` and a `max` for one numeric type (`RangeU8` through
+// `RangeF64`). Containment and emptiness are exposed as generic macros that
+// dispatch on the range type, so the same call works for every width.
+//
+// Usage:
+//
+//   RangeU8 range = NEW_RANGE(10, 20);
+//   if(Range_Contains(range, 15)) { /* ... */ }
+//   if(Range_IsEmpty(range)) { /* ... */ }
+// ────────────────────────────────────────────────────────────────────────────
+
 #ifndef KOLEKTO_RANGE
 #define KOLEKTO_RANGE
 
 #include "Datatypes.h"   
-
-// Ranges allow to check if a value is within certain boundaries. There is a 
-// specific range type for every basic number type, however the functions and 
-// checks are generic.
 
 // ────────────────────────────────────────────────────────────────────────────
 // Data Types
