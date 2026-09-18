@@ -1,8 +1,7 @@
 #ifndef KOLEKTO_ASCII
 #define KOLEKTO_ASCII
 
-#include "datatypes.h"
-#include "ascii.h"
+#include "Datatypes.h"
 
 /** Portable representation of a single ASCII character (0-127). */
 typedef char ASCII;

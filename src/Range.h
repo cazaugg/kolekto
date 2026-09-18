@@ -1,7 +1,7 @@
 #ifndef KOLEKTO_RANGE
 #define KOLEKTO_RANGE
 
-#include "datatypes.h"   
+#include "Datatypes.h"   
 
 // Ranges allow to check if a value is within certain boundaries. There is a 
 // specific range type for every basic number type, however the functions and 
@@ -64,42 +64,55 @@ typedef struct {
     f64 max;
 } RangeF64;
 
+/** @brief Create a range value from a minimum and a maximum. */
 #define NEW_RANGE(min, max)  {min, max}
 
 // ────────────────────────────────────────────────────────────────────────────
 // Public Functions
 // ────────────────────────────────────────────────
-#define range_is_empty(r)          ((r).min > (r).max)
 
-#define range_contains(range, value) \
+/**
+ * @brief Check whether a range is empty.
+ * @param range Range to check.
+ * @return true if `range.min > range.max`.
+ */
+#define Range_IsEmpty(range)          ((range).min > (range).max)
+
+/**
+ * @brief Check whether a value lies inside a range.
+ * @param range Range to test against (RangeU8 … RangeF64).
+ * @param value Value to test.
+ * @return true if `value` is in `[range.min, range.max]`.
+ */
+#define Range_Contains(range, value) \
     _Generic((range),                \
-        RangeU8:  range_contains_u8,  \
-        RangeU16: range_contains_u16, \
-        RangeU32: range_contains_u32, \
-        RangeU64: range_contains_u64, \
-        RangeI8:  range_contains_i8,  \
-        RangeI16: range_contains_i16, \
-        RangeI32: range_contains_i32, \
-        RangeI64: range_contains_i64, \
-        RangeF32: range_contains_f32, \
-        RangeF64: range_contains_f64  \
+        RangeU8:  RangeU8_Contains,  \
+        RangeU16: RangeU16_Contains, \
+        RangeU32: RangeU32_Contains, \
+        RangeU64: RangeU64_Contains, \
+        RangeI8:  RangeI8_Contains,  \
+        RangeI16: RangeI16_Contains, \
+        RangeI32: RangeI32_Contains, \
+        RangeI64: RangeI64_Contains, \
+        RangeF32: RangeF32_Contains, \
+        RangeF64: RangeF64_Contains  \
     )((range), (value))
 
-    
+
 // ────────────────────────────────────────────────────────────────────────────
 // Implementation
 // ────────────────────────────────────────────────
-static inline Bool range_contains_u8 (RangeU8  r, u8  v) { return v >= r.min && v <= r.max; }
-static inline Bool range_contains_u16(RangeU16 r, u16 v) { return v >= r.min && v <= r.max; }
-static inline Bool range_contains_u32(RangeU32 r, u32 v) { return v >= r.min && v <= r.max; }
-static inline Bool range_contains_u64(RangeU64 r, u64 v) { return v >= r.min && v <= r.max; }
+static inline Bool RangeU8_Contains (RangeU8  range, u8  value) { return value >= range.min && value <= range.max; }
+static inline Bool RangeU16_Contains(RangeU16 range, u16 value) { return value >= range.min && value <= range.max; }
+static inline Bool RangeU32_Contains(RangeU32 range, u32 value) { return value >= range.min && value <= range.max; }
+static inline Bool RangeU64_Contains(RangeU64 range, u64 value) { return value >= range.min && value <= range.max; }
 
-static inline Bool range_contains_i8 (RangeI8  r, i8  v) { return v >= r.min && v <= r.max; }
-static inline Bool range_contains_i16(RangeI16 r, i16 v) { return v >= r.min && v <= r.max; }
-static inline Bool range_contains_i32(RangeI32 r, i32 v) { return v >= r.min && v <= r.max; }
-static inline Bool range_contains_i64(RangeI64 r, i64 v) { return v >= r.min && v <= r.max; }
+static inline Bool RangeI8_Contains (RangeI8  range, i8  value) { return value >= range.min && value <= range.max; }
+static inline Bool RangeI16_Contains(RangeI16 range, i16 value) { return value >= range.min && value <= range.max; }
+static inline Bool RangeI32_Contains(RangeI32 range, i32 value) { return value >= range.min && value <= range.max; }
+static inline Bool RangeI64_Contains(RangeI64 range, i64 value) { return value >= range.min && value <= range.max; }
 
-static inline Bool range_contains_f32(RangeF32 r, f32 v) { return v >= r.min && v <= r.max; }
-static inline Bool range_contains_f64(RangeF64 r, f64 v) { return v >= r.min && v <= r.max; }
+static inline Bool RangeF32_Contains(RangeF32 range, f32 value) { return value >= range.min && value <= range.max; }
+static inline Bool RangeF64_Contains(RangeF64 range, f64 value) { return value >= range.min && value <= range.max; }
 
 #endif /* KOLEKTO_RANGE */

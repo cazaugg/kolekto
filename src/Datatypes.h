@@ -22,7 +22,7 @@ typedef int64_t i64;
 typedef float  f32;
 typedef double f64;
 
-// Boolean (already in stdBool.h, but alias for consistency)
+// Boolean (already in <stdbool.h>, but alias for consistency)
 typedef bool    Bool;
 typedef size_t  Size;
 typedef void * const Any;
@@ -30,7 +30,7 @@ typedef void * const Any;
 // Strings
 typedef char const * String;
 
-#define UNUSED(x) (void)(x);
+#define UNUSED(x) ((void)(x))
 
 #define MIN(a, b)  __extension__({ \
         typeof_unqual(a) _a = (a); \

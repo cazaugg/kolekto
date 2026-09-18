@@ -1,5 +1,5 @@
 #include "unity.h"
-#include "../src/ascii.h"
+#include "../src/ASCII.h"
 
 void setUp(void)
 {

@@ -1,54 +1,6 @@
 #include "unity.h"
-#include "../src/safe_string.h"
+#include "../src/SafeStrings.h"
 
-void test_String_Length(void);
-void test_MutableString_Length(void);
-void test_String_Capacity(void);
-void test_String_IsEmpty(void);
-void test_MutableString_IsEmpty(void);
-void test_String_Equal_True(void);
-void test_String_Equal_False(void);
-void test_String_Equal_Builder(void);
-void test_String_Compare_Equal(void);
-void test_String_Compare_Less(void);
-void test_String_Compare_Greater(void);
-void test_String_Compare_Null(void);
-void test_String_StartsWith_True(void);
-void test_String_StartsWith_False(void);
-void test_String_EndsWith_True(void);
-void test_String_EndsWith_False(void);
-void test_String_Contains_True(void);
-void test_String_Contains_False(void);
-void test_String_Find(void);
-void test_String_Count(void);
-void test_String_Set(void);
-void test_String_Clear(void);
-void test_String_Append(void);
-void test_String_AppendChar(void);
-void test_String_TrimStart(void);
-void test_String_TrimEnd(void);
-void test_String_Trim(void);
-void test_String_ToUpper(void);
-void test_String_ToLower(void);
-void test_String_Join(void);
-void test_String_Reverse(void);
-void test_String_Split(void);
-void test_String_Split_NoDelimiter(void);
-void test_String_Split_Empty(void);
-void test_String_Split_Limit(void);
-void test_String_Split_RepeatedDelimiters(void);
-void test_String_Split_MultiDelimiter(void);
-void test_String_Insert(void);
-void test_String_Insert_Empty(void);
-void test_String_Insert_ExactCapacity(void);
-void test_String_Insert_InsufficientCapacity(void);
-void test_String_Replace_SameLength(void);
-void test_String_Replace_Longer(void);
-void test_String_Replace_Shorter(void);
-void test_String_Replace_Remove(void);
-void test_String_Replace_NotFound(void);
-void test_String_Replace_ExactCapacity(void);
-void test_String_Replace_InsufficientCapacity(void);
 
 void setUp(void)
 {
@@ -58,7 +10,7 @@ void tearDown(void)
 {
 }
 
-void test_String_Length(void)
+static void Test_String_Length(void)
 {
     String empty = "";
     String word = "abcd";
@@ -68,7 +20,7 @@ void test_String_Length(void)
     TEST_ASSERT_EQUAL_UINT32(11, String_Length(phrase));
 }
 
-void test_MutableString_Length(void)
+static void Test_MutableString_Length(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(32, "");
     TEST_ASSERT_EQUAL_UINT32(0, String_Length(sb));
@@ -83,7 +35,7 @@ void test_MutableString_Length(void)
     TEST_ASSERT_EQUAL_UINT32(0, String_Length(sb));
 }
 
-void test_String_Capacity(void)
+static void Test_String_Capacity(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "abc");
 
@@ -96,7 +48,7 @@ void test_String_Capacity(void)
     TEST_ASSERT_EQUAL_UINT32(16, String_Capacity(sb));
 }
 
-void test_String_IsEmpty(void)
+static void Test_String_IsEmpty(void)
 {
     String empty = "";
     String single = "a";
@@ -106,7 +58,7 @@ void test_String_IsEmpty(void)
     TEST_ASSERT_FALSE(String_IsEmpty(word));
 }
 
-void test_MutableString_IsEmpty(void)
+static void Test_MutableString_IsEmpty(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "");
     TEST_ASSERT_TRUE(String_IsEmpty(sb));
@@ -118,7 +70,7 @@ void test_MutableString_IsEmpty(void)
     TEST_ASSERT_TRUE(String_IsEmpty(sb));
 }
 
-void test_String_Equal_True(void)
+static void Test_String_Equal_True(void)
 {
     String empty = "";
     String word = "abcd";
@@ -128,7 +80,7 @@ void test_String_Equal_True(void)
     TEST_ASSERT_TRUE(String_Equal(phrase, "hello world"));
 }
 
-void test_String_Equal_False(void)
+static void Test_String_Equal_False(void)
 {
     String abc = "abc";
     MutableString phrase = NEW_MUTABLE_STRING(20, "abd");
@@ -139,7 +91,7 @@ void test_String_Equal_False(void)
     TEST_ASSERT_FALSE(String_Equal(phrase, "abc"));
 }
 
-void test_String_Equal_Builder(void)
+static void Test_String_Equal_Builder(void)
 {
     char buffer[16] = {0};
     MutableString sb = {.data = buffer, .capacity = 16, .length = 0};
@@ -157,7 +109,7 @@ void test_String_Equal_Builder(void)
     TEST_ASSERT_TRUE(String_Equal(sb, sb2));
 }
 
-void test_String_Compare_Equal(void)
+static void Test_String_Compare_Equal(void)
 {
     String a = "hello";
     String b = "hello";
@@ -168,7 +120,7 @@ void test_String_Compare_Equal(void)
     TEST_ASSERT_EQUAL_INT8(0, String_Compare(empty, empty));
 }
 
-void test_String_Compare_Less(void)
+static void Test_String_Compare_Less(void)
 {
     String a = "abc";
     String b = "abd";
@@ -179,7 +131,7 @@ void test_String_Compare_Less(void)
     TEST_ASSERT_TRUE(String_Compare(prefix, a) < 0);
 }
 
-void test_String_Compare_Greater(void)
+static void Test_String_Compare_Greater(void)
 {
     String a = "abd";
     String b = "abc";
@@ -190,14 +142,14 @@ void test_String_Compare_Greater(void)
     TEST_ASSERT_TRUE(String_Compare(longer, "abc") > 0);
 }
 
-void test_String_Compare_Null(void)
+static void Test_String_Compare_Null(void)
 {
     TEST_ASSERT_EQUAL_INT8(-1, StringLiteral_Compare(NULL, "a"));
     TEST_ASSERT_EQUAL_INT8(1, StringLiteral_Compare("a", NULL));
     TEST_ASSERT_EQUAL_INT8(-1, StringLiteral_Compare(NULL, NULL));
 }
 
-void test_String_StartsWith_True(void)
+static void Test_String_StartsWith_True(void)
 {
     String sentence = "hello world";
     TEST_ASSERT_TRUE(String_StartsWith(sentence, "hello"));
@@ -212,7 +164,7 @@ void test_String_StartsWith_True(void)
     TEST_ASSERT_TRUE(String_StartsWith(sentence2, ""));
 }
 
-void test_String_StartsWith_False(void)
+static void Test_String_StartsWith_False(void)
 {
     String sentence = "hello world";
     TEST_ASSERT_FALSE(String_StartsWith(sentence, "world"));
@@ -225,7 +177,7 @@ void test_String_StartsWith_False(void)
     TEST_ASSERT_FALSE(String_StartsWith(sentence2, "hello world!"));
 }
 
-void test_String_EndsWith_True(void)
+static void Test_String_EndsWith_True(void)
 {
     String sentence = "hello world";
     TEST_ASSERT_TRUE(String_EndsWith(sentence, "world"));
@@ -240,7 +192,7 @@ void test_String_EndsWith_True(void)
     TEST_ASSERT_TRUE(String_EndsWith(sentence2, ""));
 }
 
-void test_String_EndsWith_False(void)
+static void Test_String_EndsWith_False(void)
 {
     String sentence = "hello world";
     TEST_ASSERT_FALSE(String_EndsWith(sentence, "hello"));
@@ -255,7 +207,7 @@ void test_String_EndsWith_False(void)
     TEST_ASSERT_FALSE(String_EndsWith(sentence2, "hello world!"));
 }
 
-void test_String_Contains_True(void)
+static void Test_String_Contains_True(void)
 {
     String sentence = "hello world";
     TEST_ASSERT_TRUE(String_Contains(sentence, "world"));
@@ -264,7 +216,7 @@ void test_String_Contains_True(void)
     TEST_ASSERT_TRUE(String_Contains(sentence, " "));
 }
 
-void test_String_Contains_False(void)
+static void Test_String_Contains_False(void)
 {
     String sentence = "hello world";
     TEST_ASSERT_FALSE(String_Contains(sentence, "xyz"));
@@ -272,7 +224,7 @@ void test_String_Contains_False(void)
     TEST_ASSERT_FALSE(String_Contains(sentence, "hello world!"));
 }
 
-void test_String_Find(void)
+static void Test_String_Find(void)
 {
     String sentence = "hello world";
     TEST_ASSERT_EQUAL_UINT32(0, String_Find(sentence, "hello"));
@@ -282,7 +234,7 @@ void test_String_Find(void)
     TEST_ASSERT_EQUAL_UINT32(0, String_Find(sentence, "hello world"));
 }
 
-void test_String_Count(void)
+static void Test_String_Count(void)
 {
     String sentence = "hello world";
     TEST_ASSERT_EQUAL_UINT32(3, String_Count(sentence, "l"));
@@ -293,7 +245,7 @@ void test_String_Count(void)
     TEST_ASSERT_EQUAL_UINT32(2, String_Count("aba", "a"));
 }
 
-void test_String_Set(void)
+static void Test_String_Set(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "hello");
 
@@ -309,7 +261,7 @@ void test_String_Set(void)
     TEST_ASSERT_EQUAL_STRING("", sb.data);
 }
 
-void test_String_Clear(void)
+static void Test_String_Clear(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "hello");
     TEST_ASSERT_FALSE(String_IsEmpty(sb));
@@ -319,7 +271,7 @@ void test_String_Clear(void)
     TEST_ASSERT_EQUAL_UINT32(0, String_Length(sb));
 }
 
-void test_String_Append(void)
+static void Test_String_Append(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "hello");
 
@@ -335,7 +287,7 @@ void test_String_Append(void)
     TEST_ASSERT_EQUAL_STRING("abc", sb.data);
 }
 
-void test_String_AppendChar(void)
+static void Test_String_AppendChar(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "abc ");
 
@@ -348,7 +300,7 @@ void test_String_AppendChar(void)
     TEST_ASSERT_EQUAL_STRING("abc hi!", sb.data);
 }
 
-void test_String_TrimStart(void)
+static void Test_String_TrimStart(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "   hello");
 
@@ -373,7 +325,7 @@ void test_String_TrimStart(void)
     TEST_ASSERT_EQUAL_STRING("", sb.data);
 }
 
-void test_String_TrimEnd(void)
+static void Test_String_TrimEnd(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "hello   ");
 
@@ -398,7 +350,7 @@ void test_String_TrimEnd(void)
     TEST_ASSERT_EQUAL_STRING("", sb.data);
 }
 
-void test_String_Trim(void)
+static void Test_String_Trim(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "  hello world  ");
 
@@ -422,7 +374,7 @@ void test_String_Trim(void)
     TEST_ASSERT_EQUAL_STRING("", sb.data);
 }
 
-void test_String_ToUpper(void)
+static void Test_String_ToUpper(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(20, "hello world 123!");
 
@@ -438,7 +390,7 @@ void test_String_ToUpper(void)
     TEST_ASSERT_EQUAL_STRING("", sb.data);
 }
 
-void test_String_ToLower(void)
+static void Test_String_ToLower(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(20, "HELLO WORLD 123!");
 
@@ -454,7 +406,7 @@ void test_String_ToLower(void)
     TEST_ASSERT_EQUAL_STRING("", sb.data);
 }
 
-void test_String_Join(void)
+static void Test_String_Join(void)
 {
     String parts[3] = {"one", "two", "three"};
     MutableString sb = NEW_MUTABLE_STRING(32, "xxxxxxxxx");
@@ -484,7 +436,7 @@ void test_String_Join(void)
     TEST_ASSERT_EQUAL_UINT32(0, String_Join(&exact, "", 1, over));
 }
 
-void test_String_Reverse(void)
+static void Test_String_Reverse(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "");
     String_Reverse(&sb);
@@ -503,7 +455,7 @@ void test_String_Reverse(void)
     TEST_ASSERT_EQUAL_STRING("olleh", sb.data);
 }
 
-void test_String_Split(void)
+static void Test_String_Split(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(32, "one,two,three");
     String splits[3];
@@ -514,7 +466,7 @@ void test_String_Split(void)
     TEST_ASSERT_EQUAL_STRING("three", splits[2]);
 }
 
-void test_String_Split_NoDelimiter(void)
+static void Test_String_Split_NoDelimiter(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "hello");
     String splits[2];
@@ -524,7 +476,7 @@ void test_String_Split_NoDelimiter(void)
     TEST_ASSERT_EQUAL_STRING("", splits[1]);
 }
 
-void test_String_Split_Empty(void)
+static void Test_String_Split_Empty(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "");
     String splits[2] = {"x", "y"};
@@ -534,7 +486,7 @@ void test_String_Split_Empty(void)
     TEST_ASSERT_EQUAL_STRING("", splits[1]);
 }
 
-void test_String_Split_Limit(void)
+static void Test_String_Split_Limit(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "a,b,c,d");
     String splits[2];
@@ -544,7 +496,7 @@ void test_String_Split_Limit(void)
     TEST_ASSERT_EQUAL_STRING("b", splits[1]);
 }
 
-void test_String_Split_RepeatedDelimiters(void)
+static void Test_String_Split_RepeatedDelimiters(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "a,,b,,c");
     String splits[3];
@@ -560,7 +512,7 @@ void test_String_Split_RepeatedDelimiters(void)
     TEST_ASSERT_EQUAL_STRING("b", splits[1]);
 }
 
-void test_String_Split_MultiDelimiter(void)
+static void Test_String_Split_MultiDelimiter(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "a,b;c d");
     String splits[4];
@@ -572,7 +524,7 @@ void test_String_Split_MultiDelimiter(void)
     TEST_ASSERT_EQUAL_STRING("d", splits[3]);
 }
 
-void test_String_Insert(void)
+static void Test_String_Insert(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "hello");
 
@@ -588,7 +540,7 @@ void test_String_Insert(void)
     TEST_ASSERT_EQUAL_UINT32(10, String_Length(sb));
 }
 
-void test_String_Insert_Empty(void)
+static void Test_String_Insert_Empty(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "hello");
 
@@ -597,7 +549,7 @@ void test_String_Insert_Empty(void)
     TEST_ASSERT_EQUAL_UINT32(5, String_Length(sb));
 }
 
-void test_String_Insert_ExactCapacity(void)
+static void Test_String_Insert_ExactCapacity(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(8, "abcd");
 
@@ -606,7 +558,7 @@ void test_String_Insert_ExactCapacity(void)
     TEST_ASSERT_EQUAL_UINT32(8, String_Length(sb));
 }
 
-void test_String_Insert_InsufficientCapacity(void)
+static void Test_String_Insert_InsufficientCapacity(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(8, "abcd");
 
@@ -615,7 +567,7 @@ void test_String_Insert_InsufficientCapacity(void)
     TEST_ASSERT_EQUAL_UINT32(4, String_Length(sb));
 }
 
-void test_String_Replace_SameLength(void)
+static void Test_String_Replace_SameLength(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "hello world");
 
@@ -624,7 +576,7 @@ void test_String_Replace_SameLength(void)
     TEST_ASSERT_EQUAL_UINT32(11, String_Length(sb));
 }
 
-void test_String_Replace_Longer(void)
+static void Test_String_Replace_Longer(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "hi world");
 
@@ -633,7 +585,7 @@ void test_String_Replace_Longer(void)
     TEST_ASSERT_EQUAL_UINT32(11, String_Length(sb));
 }
 
-void test_String_Replace_Shorter(void)
+static void Test_String_Replace_Shorter(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "hello world");
 
@@ -642,7 +594,7 @@ void test_String_Replace_Shorter(void)
     TEST_ASSERT_EQUAL_UINT32(9, String_Length(sb));
 }
 
-void test_String_Replace_Remove(void)
+static void Test_String_Replace_Remove(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "hello world");
 
@@ -651,7 +603,7 @@ void test_String_Replace_Remove(void)
     TEST_ASSERT_EQUAL_UINT32(5, String_Length(sb));
 }
 
-void test_String_Replace_NotFound(void)
+static void Test_String_Replace_NotFound(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(16, "hello");
 
@@ -660,7 +612,7 @@ void test_String_Replace_NotFound(void)
     TEST_ASSERT_EQUAL_UINT32(5, String_Length(sb));
 }
 
-void test_String_Replace_ExactCapacity(void)
+static void Test_String_Replace_ExactCapacity(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(8, "hixxx");
 
@@ -669,7 +621,7 @@ void test_String_Replace_ExactCapacity(void)
     TEST_ASSERT_EQUAL_UINT32(8, String_Length(sb));
 }
 
-void test_String_Replace_InsufficientCapacity(void)
+static void Test_String_Replace_InsufficientCapacity(void)
 {
     MutableString sb = NEW_MUTABLE_STRING(8, "hi");
 
@@ -681,53 +633,53 @@ void test_String_Replace_InsufficientCapacity(void)
 int main(void)
 {
     UNITY_BEGIN();
-    RUN_TEST(test_String_Length);
-    RUN_TEST(test_MutableString_Length);
-    RUN_TEST(test_String_Capacity);
-    RUN_TEST(test_String_IsEmpty);
-    RUN_TEST(test_MutableString_IsEmpty);
-    RUN_TEST(test_String_Equal_True);
-    RUN_TEST(test_String_Equal_False);
-    RUN_TEST(test_String_Equal_Builder);
-    RUN_TEST(test_String_Compare_Equal);
-    RUN_TEST(test_String_Compare_Less);
-    RUN_TEST(test_String_Compare_Greater);
-    RUN_TEST(test_String_Compare_Null);
-    RUN_TEST(test_String_StartsWith_True);
-    RUN_TEST(test_String_StartsWith_False);
-    RUN_TEST(test_String_EndsWith_True);
-    RUN_TEST(test_String_EndsWith_False);
-    RUN_TEST(test_String_Contains_True);
-    RUN_TEST(test_String_Contains_False);
-    RUN_TEST(test_String_Find);
-    RUN_TEST(test_String_Count);
-    RUN_TEST(test_String_Set);
-    RUN_TEST(test_String_Clear);
-    RUN_TEST(test_String_Append);
-    RUN_TEST(test_String_AppendChar);
-    RUN_TEST(test_String_TrimStart);
-    RUN_TEST(test_String_TrimEnd);
-    RUN_TEST(test_String_Trim);
-    RUN_TEST(test_String_ToUpper);
-    RUN_TEST(test_String_ToLower);
-    RUN_TEST(test_String_Join);
-    RUN_TEST(test_String_Reverse);
-    RUN_TEST(test_String_Split);
-    RUN_TEST(test_String_Split_NoDelimiter);
-    RUN_TEST(test_String_Split_Empty);
-    RUN_TEST(test_String_Split_Limit);
-    RUN_TEST(test_String_Split_RepeatedDelimiters);
-    RUN_TEST(test_String_Split_MultiDelimiter);
-    RUN_TEST(test_String_Insert);
-    RUN_TEST(test_String_Insert_Empty);
-    RUN_TEST(test_String_Insert_ExactCapacity);
-    RUN_TEST(test_String_Insert_InsufficientCapacity);
-    RUN_TEST(test_String_Replace_SameLength);
-    RUN_TEST(test_String_Replace_Longer);
-    RUN_TEST(test_String_Replace_Shorter);
-    RUN_TEST(test_String_Replace_Remove);
-    RUN_TEST(test_String_Replace_NotFound);
-    RUN_TEST(test_String_Replace_ExactCapacity);
-    RUN_TEST(test_String_Replace_InsufficientCapacity);
+    RUN_TEST(Test_String_Length);
+    RUN_TEST(Test_MutableString_Length);
+    RUN_TEST(Test_String_Capacity);
+    RUN_TEST(Test_String_IsEmpty);
+    RUN_TEST(Test_MutableString_IsEmpty);
+    RUN_TEST(Test_String_Equal_True);
+    RUN_TEST(Test_String_Equal_False);
+    RUN_TEST(Test_String_Equal_Builder);
+    RUN_TEST(Test_String_Compare_Equal);
+    RUN_TEST(Test_String_Compare_Less);
+    RUN_TEST(Test_String_Compare_Greater);
+    RUN_TEST(Test_String_Compare_Null);
+    RUN_TEST(Test_String_StartsWith_True);
+    RUN_TEST(Test_String_StartsWith_False);
+    RUN_TEST(Test_String_EndsWith_True);
+    RUN_TEST(Test_String_EndsWith_False);
+    RUN_TEST(Test_String_Contains_True);
+    RUN_TEST(Test_String_Contains_False);
+    RUN_TEST(Test_String_Find);
+    RUN_TEST(Test_String_Count);
+    RUN_TEST(Test_String_Set);
+    RUN_TEST(Test_String_Clear);
+    RUN_TEST(Test_String_Append);
+    RUN_TEST(Test_String_AppendChar);
+    RUN_TEST(Test_String_TrimStart);
+    RUN_TEST(Test_String_TrimEnd);
+    RUN_TEST(Test_String_Trim);
+    RUN_TEST(Test_String_ToUpper);
+    RUN_TEST(Test_String_ToLower);
+    RUN_TEST(Test_String_Join);
+    RUN_TEST(Test_String_Reverse);
+    RUN_TEST(Test_String_Split);
+    RUN_TEST(Test_String_Split_NoDelimiter);
+    RUN_TEST(Test_String_Split_Empty);
+    RUN_TEST(Test_String_Split_Limit);
+    RUN_TEST(Test_String_Split_RepeatedDelimiters);
+    RUN_TEST(Test_String_Split_MultiDelimiter);
+    RUN_TEST(Test_String_Insert);
+    RUN_TEST(Test_String_Insert_Empty);
+    RUN_TEST(Test_String_Insert_ExactCapacity);
+    RUN_TEST(Test_String_Insert_InsufficientCapacity);
+    RUN_TEST(Test_String_Replace_SameLength);
+    RUN_TEST(Test_String_Replace_Longer);
+    RUN_TEST(Test_String_Replace_Shorter);
+    RUN_TEST(Test_String_Replace_Remove);
+    RUN_TEST(Test_String_Replace_NotFound);
+    RUN_TEST(Test_String_Replace_ExactCapacity);
+    RUN_TEST(Test_String_Replace_InsufficientCapacity);
     return UNITY_END();
 }

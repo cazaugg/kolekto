@@ -1,5 +1,5 @@
 
-#include "datatypes.h"
+#include "Datatypes.h"
 
 #include <stdio.h>
 
