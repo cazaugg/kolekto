@@ -29,62 +29,62 @@ u8 ascii_table[128] = {
 	_L,	_L,	_L,	_P,	_P,	_P,	_P,	_C
 };
 
-bool ASCII_IsValid(ascii character)
+Bool ASCII_IsValid(ASCII character)
 {
     return character > 0;
 }
 
-bool ASCII_IsAlphaNumeric(ascii character)
+Bool ASCII_IsAlphaNumeric(ASCII character)
 {
     return ascii_table[(unsigned char)character] & (_U|_L|_N);
 }
 
-bool ASCII_IsLetter(ascii character)
+Bool ASCII_IsLetter(ASCII character)
 {
     return ascii_table[(unsigned char)character] & (_U|_L);
 }
 
-bool ASCII_IsLowerCase(ascii character)
+Bool ASCII_IsLowerCase(ASCII character)
 {
     return ascii_table[(unsigned char)character] & (_L);
 }
 
-bool ASCII_IsUpperCase(ascii character)
+Bool ASCII_IsUpperCase(ASCII character)
 {
     return ascii_table[(unsigned char)character] & (_U);
 }
 
-bool ASCII_IsDigit(ascii character)
+Bool ASCII_IsDigit(ASCII character)
 {
     return ascii_table[(unsigned char)character] & (_N);
 }
 
-bool ASCII_IsHexDigit(ascii character)
+Bool ASCII_IsHexDigit(ASCII character)
 {
     return ascii_table[(unsigned char)character] & (_N|_X);
 }
 
-bool ASCII_IsPrintable(ascii character)
+Bool ASCII_IsPrintable(ASCII character)
 {
     return ascii_table[(unsigned char)character] & (_P|_U|_L|_N|_B);
 }
 
-bool ASCII_IsSpace(ascii character)
+Bool ASCII_IsSpace(ASCII character)
 {
     return ascii_table[(unsigned char)character] & (_S);
 }
 
-bool ASCII_IsPunctuation(ascii character)
+Bool ASCII_IsPunctuation(ASCII character)
 {
     return ascii_table[(unsigned char)character] & (_P);
 }
 
-bool ASCII_IsControlCode(ascii character)
+Bool ASCII_IsControlCode(ASCII character)
 {
     return ascii_table[(unsigned char)character] & (_C);
 }
 
-ascii ASCII_ToLower(ascii character)
+ASCII ASCII_ToLower(ASCII character)
 {
     if(ASCII_IsUpperCase(character))
     {
@@ -93,7 +93,7 @@ ascii ASCII_ToLower(ascii character)
     return character;
 }
 
-ascii ASCII_ToUpper(ascii character)
+ASCII ASCII_ToUpper(ASCII character)
 {
     if(ASCII_IsLowerCase(character))
     {

@@ -22,24 +22,24 @@ u32 StringLiteral_Length(String str);
 u32 MutableString_Length(MutableString str);
 #define String_Length(str) _Generic((str), String: StringLiteral_Length, char*: StringLiteral_Length, MutableString: MutableString_Length)(str)
 
-bool StringLiteral_IsEmpty(String str);
-bool MutableString_IsEmpty(MutableString str);
+Bool StringLiteral_IsEmpty(String str);
+Bool MutableString_IsEmpty(MutableString str);
 u32 String_Capacity(MutableString str);
 #define String_IsEmpty(str) _Generic((str), String: StringLiteral_IsEmpty, char*: StringLiteral_IsEmpty, MutableString: MutableString_IsEmpty)(str)
 
-bool StringLiteral_Equal(String a, String b);
+Bool StringLiteral_Equal(String a, String b);
 #define String_Equal(a, b) StringLiteral_Equal(String_ToString(a), String_ToString(b))
 
 i8 StringLiteral_Compare(String a, String b);
 #define String_Compare(a, b) StringLiteral_Compare(String_ToString(a), String_ToString(b))
 
-bool StringLiteral_StartsWith(String str, String prefix);
+Bool StringLiteral_StartsWith(String str, String prefix);
 #define String_StartsWith(str, prefix) StringLiteral_StartsWith(String_ToString(str), prefix)
 
-bool StringLiteral_EndsWith(String str, String suffix);
+Bool StringLiteral_EndsWith(String str, String suffix);
 #define String_EndsWith(str, suffix) StringLiteral_EndsWith(String_ToString(str), suffix)
 
-bool StringLiteral_Contains(String str, String needle);
+Bool StringLiteral_Contains(String str, String needle);
 #define String_Contains(str, needle) StringLiteral_Contains(String_ToString(str), needle)
 
 u32 StringLiteral_Find(String str, String needle);
@@ -50,8 +50,8 @@ u32  StringLiteral_Count(String str, String needle);
 
 u32 String_Set(MutableString *str, String value);
 void String_Clear(MutableString *str);
-bool String_Append(MutableString *str, String text);
-bool String_AppendChar(MutableString *str, ascii ch);
+Bool String_Append(MutableString *str, String text);
+Bool String_AppendChar(MutableString *str, ASCII ch);
 
 u32 String_Join(MutableString *str, String separator, u8 nof_joins, String list[nof_joins]);
 

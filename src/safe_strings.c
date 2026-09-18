@@ -16,17 +16,17 @@ u32 String_Capacity(MutableString str)
     return str.capacity - str.length;
 }
 
-bool StringLiteral_IsEmpty(String str)
+Bool StringLiteral_IsEmpty(String str)
 {
     return str[0] == '\0';
 }
 
-bool MutableString_IsEmpty(MutableString str)
+Bool MutableString_IsEmpty(MutableString str)
 {
     return str.length == 0;
 }
 
-bool StringLiteral_Equal(String a, String b)
+Bool StringLiteral_Equal(String a, String b)
 {
     if( a && b) return 0 == strcmp(a, b);
     return false;
@@ -39,13 +39,13 @@ i8 StringLiteral_Compare(String a, String b)
     return (i8)strcmp(a, b);
 }
 
-bool StringLiteral_StartsWith(String str, String prefix)
+Bool StringLiteral_StartsWith(String str, String prefix)
 {
     ASSERT_OR(str && prefix) return false;
     return 0 == strncmp(str, prefix, strlen(prefix));
 }
 
-bool StringLiteral_EndsWith(String str, String suffix)
+Bool StringLiteral_EndsWith(String str, String suffix)
 {
     ASSERT_OR(str && suffix) return false;
 
@@ -56,7 +56,7 @@ bool StringLiteral_EndsWith(String str, String suffix)
     return 0 == strncmp(str + start, suffix, suffix_len);
 }
 
-bool StringLiteral_Contains(String str, String needle)
+Bool StringLiteral_Contains(String str, String needle)
 {
     ASSERT_OR(str && needle) return false;
     ASSERT_OR(needle[0] != '\0') return false;
@@ -109,7 +109,7 @@ void String_Clear(MutableString *str)
     str->length = 0;
 }
 
-bool String_Append(MutableString *str, String text)
+Bool String_Append(MutableString *str, String text)
 {
     ASSERT_OR(str && str->data && text) return false;
     u32 value_len = StringLiteral_Length(text);
@@ -121,7 +121,7 @@ bool String_Append(MutableString *str, String text)
     return true;
 }
 
-bool String_AppendChar(MutableString *str, ascii ch)
+Bool String_AppendChar(MutableString *str, ASCII ch)
 {
     ASSERT_OR(str && str->data) return false;
     if(str->length >= str->capacity) return false;

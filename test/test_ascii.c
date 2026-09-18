@@ -13,7 +13,7 @@ static void Test_ASCII_IsValid_True(void)
 {
     for (int c = 1; c < 128; ++c)
     {
-        TEST_ASSERT_TRUE_MESSAGE(ASCII_IsValid((ascii)c), "All values 1-127 should be valid");
+        TEST_ASSERT_TRUE_MESSAGE(ASCII_IsValid((ASCII)c), "All values 1-127 should be valid");
     }
 }
 
@@ -21,7 +21,7 @@ static void Test_ASCII_IsValid_False(void)
 {
     for (int c = 128; c < 256; ++c)
     {
-        TEST_ASSERT_FALSE_MESSAGE(ASCII_IsValid((ascii)c), "All values 128-255 should be invalid");
+        TEST_ASSERT_FALSE_MESSAGE(ASCII_IsValid((ASCII)c), "All values 128-255 should be invalid");
     }
 }
 
@@ -198,7 +198,7 @@ static void Test_ASCII_IsControlCode_true(void)
 {
     for (int c = 0; c < 32; ++c)
     {
-        TEST_ASSERT_TRUE_MESSAGE(ASCII_IsControlCode((ascii)c), "Values 0-31 should be control codes");
+        TEST_ASSERT_TRUE_MESSAGE(ASCII_IsControlCode((ASCII)c), "Values 0-31 should be control codes");
     }
     TEST_ASSERT_TRUE(ASCII_IsControlCode(127));
 }

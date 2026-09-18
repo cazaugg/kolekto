@@ -27,7 +27,7 @@ Size TextIO_WriteLine(TextIO io[const static 1], String text)
     nofBytes += ByteIO_Write(io.io, String_Length(io.k), (u8*) text);
 }
 
-Size TextIO_Read(const TextIO io, Size n, ascii text[n])
+Size TextIO_Read(const TextIO io, Size n, ASCII text[n])
 {
     Size len = ByteIO_Read(io.io, n, (u8*)text);
     if(io.echo) ByteIO_Write(io.io, n, text);
@@ -37,11 +37,11 @@ Size TextIO_Read(const TextIO io, Size n, ascii text[n])
 Size TextIO_ReadLine(TextIO io, MutableString line)
 {
     Size len = String_Length(line);
-    bool lineFound = false;
+    Bool lineFound = false;
     do
     {
-        ascii next;
-        bool more = ByteIO_Read(io.io, &next);
+        ASCII next;
+        Bool more = ByteIO_Read(io.io, &next);
 
         if(more)
         {
