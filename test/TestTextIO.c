@@ -89,6 +89,28 @@ static void Test_TextIO_WriteLine(void)
     TEST_ASSERT_EQUAL_UINT8('\n', mock.output[2]);
 }
 
+static void Test_TextIO_Print(void)
+{
+    MockDriver mock = {0};
+    mock.output_limit = 64;
+    ByteIO stream = NEW_BYTE_IO(&mock, MockWriteByte, MockReadByte, MockGetStatus);
+    TextIO io = NEW_TEXT_IO(stream, 64, "\n", ECHO_OFF);
+
+    TEST_ASSERT_EQUAL_size_t(4, TextIO_Print(&io, "%s-%d", "ab", 3));
+    TEST_ASSERT_EQUAL_STRING("ab-3", (char*) mock.output);
+}
+
+static void Test_TextIO_PrintLine(void)
+{
+    MockDriver mock = {0};
+    mock.output_limit = 64;
+    ByteIO stream = NEW_BYTE_IO(&mock, MockWriteByte, MockReadByte, MockGetStatus);
+    TextIO io = NEW_TEXT_IO(stream, 64, "\n", ECHO_OFF);
+
+    TEST_ASSERT_EQUAL_size_t(5, TextIO_PrintLine(&io, "%s-%d", "ab", 3));
+    TEST_ASSERT_EQUAL_STRING("ab-3\n", (char*) mock.output);
+}
+
 static void Test_TextIO_ReadLine_Valid(void)
 {
     MockDriver mock = {0};
@@ -201,6 +223,8 @@ int main(void)
     UNITY_BEGIN();
     RUN_TEST(Test_TextIO_Write);
     RUN_TEST(Test_TextIO_WriteLine);
+    RUN_TEST(Test_TextIO_Print);
+    RUN_TEST(Test_TextIO_PrintLine);
     RUN_TEST(Test_TextIO_ReadLine_Valid);
     RUN_TEST(Test_TextIO_ReadLine_Sequential);
     RUN_TEST(Test_TextIO_ReadLine_Eof);

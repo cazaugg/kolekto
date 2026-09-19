@@ -93,4 +93,28 @@ Size TextIO_ReadLine(TextIO io[const static 1]);
  */
 MutableString TextIO_GetLine(TextIO const io[const static 1]);
 
+/**
+ * @brief Write the stream's line ending.
+ * @param io Stream to write to.
+ */
+void TextIO_LineBreak(TextIO io[const static 1]);
+
+/**
+ * @brief Write formatted text without a line ending.
+ * @param io Stream to write to.
+ * @param format printf-style format string.
+ * @param ... Format arguments.
+ * @return The number of bytes written.
+ */
+Size TextIO_Print(TextIO io[const static 1], String format, ...);
+
+/**
+ * @brief Write formatted text followed by the stream's line ending.
+ * @param io Stream to write to.
+ * @param format printf-style format string.
+ * @param ... Format arguments.
+ * @return The number of bytes written.
+ */
+Size TextIO_PrintLine(TextIO io[const static 1], String format, ...);
+
 #endif /* KOLEKTO_TEXTIO */
